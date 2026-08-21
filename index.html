@@ -1,26 +1,12 @@
-<!doctype html><html lang="vi"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>HK Key Manager</title>
+<!doctype html><html lang="vi"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ADMIN HOÀNG KHÔI</title>
 <style>
-body{margin:0;background:#0b0d10;color:#eee;font:15px system-ui;padding:18px}main{max-width:900px;margin:auto}
-.card{background:#15181d;border:1px solid #292e36;border-radius:14px;padding:16px;margin:12px 0}
-input,select,button{background:#0e1115;color:#eee;border:1px solid #343a44;border-radius:9px;padding:10px;margin:4px}
-button{cursor:pointer}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.stat{font-size:22px}.muted{color:#9da5b1}table{width:100%;border-collapse:collapse}td,th{padding:9px;border-bottom:1px solid #292e36;text-align:left}
-.badge{padding:4px 8px;border-radius:20px;background:#243b2a}.off{background:#402727}
-@media(max-width:650px){.grid{grid-template-columns:repeat(2,1fr)}table{font-size:12px}}
-</style><main>
-<h1>🔑 HK Key Manager</h1>
-<div class="card"><input id="pass" type="password" placeholder="Admin password">
-<select id="dur"><option value="1h">1 giờ</option><option value="6h">6 giờ</option><option value="12h">12 giờ</option><option value="1d">1 ngày</option><option value="3d">3 ngày</option><option value="7d">7 ngày</option><option value="14d">14 ngày</option><option value="30d" selected>30 ngày</option><option value="3m">3 tháng</option><option value="6m">6 tháng</option><option value="1y">1 năm</option><option value="forever">Vĩnh viễn</option><option value="custom">Tùy chỉnh</option></select>
-<input id="custom" type="datetime-local" style="display:none"><button onclick="createKey()">＋ Tạo key</button></div>
-<div class="grid"><div class="card">Tổng<div id="total" class="stat">0</div></div><div class="card">Hoạt động<div id="active" class="stat">0</div></div><div class="card">Hết hạn<div id="expired" class="stat">0</div></div><div class="card">Đã khóa<div id="disabled" class="stat">0</div></div></div>
-<div class="card"><input id="search" placeholder="Tìm key..." oninput="render()"><div style="overflow:auto"><table><thead><tr><th>Key</th><th>Tạo</th><th>HSD</th><th>Trạng thái</th><th></th></tr></thead><tbody id="rows"></tbody></table></div></div>
-<script>
-let data=[];
-const H=()=>({'x-admin-password':document.querySelector('#pass').value,'Content-Type':'application/json'});
-async function load(){let r=await fetch('/api/keys',{headers:H()}); if(r.ok){data=await r.json();render()} }
-dur.onchange=()=>custom.style.display=dur.value==='custom'?'inline-block':'none';
-async function createKey(){let body={duration:dur.value,custom:custom.value};let r=await fetch('/api/keys',{method:'POST',headers:H(),body:JSON.stringify(body)});if(r.ok){await load();alert('Key: '+(await r.json()).key)}else alert('Sai mật khẩu')}
-async function act(id,op){await fetch('/api/keys/'+id,{method:op==='delete'?'DELETE':'PATCH',headers:H(),body:op==='toggle'?JSON.stringify({disabled:!data.find(x=>x.id===id).disabled}):undefined});load()}
-function render(){let q=search.value.toLowerCase(),now=Date.now();let f=data.filter(x=>x.key.toLowerCase().includes(q));total.textContent=data.length;active.textContent=data.filter(x=>!x.disabled&&(x.expiresAt===null||new Date(x.expiresAt)>now)).length;expired.textContent=data.filter(x=>x.expiresAt!==null&&new Date(x.expiresAt)<=now).length;disabled.textContent=data.filter(x=>x.disabled).length;rows.innerHTML=f.map(x=>{let exp=x.expiresAt?new Date(x.expiresAt).toLocaleString('vi-VN'):'Vĩnh viễn';let bad=x.disabled||(x.expiresAt&&new Date(x.expiresAt)<=now);return `<tr><td><b>${x.key}</b><br><button onclick="navigator.clipboard.writeText('${x.key}')">Copy</button></td><td>${new Date(x.createdAt).toLocaleString('vi-VN')}</td><td>${exp}</td><td><span class="badge ${bad?'off':''}">${x.disabled?'Đã khóa':(bad?'Hết hạn':'Hoạt động')}</span></td><td><button onclick="act('${x.id}','toggle')">${x.disabled?'Mở':'Khóa'}</button><button onclick="act('${x.id}','delete')">Xóa</button></td></tr>`}).join('')}
-</script></main>
+:root{--r:#ff1e2d;--bg:#050507}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at 50% -10%,#420912,#050507 55%);color:#eee;font-family:system-ui,Arial}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;background:linear-gradient(#ff14200a 1px,transparent 1px),linear-gradient(90deg,#ff14200a 1px,transparent 1px);background-size:38px 38px;animation:grid 10s linear infinite}
+@keyframes grid{to{background-position:38px 38px}}
+.wrap{max-width:520px;margin:auto;padding:22px 16px 40px}.top{text-align:center;padding:18px 0}.logo{width:88px;height:88px;margin:auto;border:1px solid #ff3045;border-radius:24px;display:grid;place-items:center;font-size:31px;font-weight:1000;letter-spacing:3px;background:linear-gradient(145deg,#3b050b,#09090b);box-shadow:0 0 15px #f11,0 0 55px #f112;animation:pulse 2s infinite}
+@keyframes pulse{50%{box-shadow:0 0 25px #f22,0 0 75px #f114}}h1{font-size:25px;letter-spacing:2px;margin:15px 0 4px}.sub{font-size:10px;color:#aaa;letter-spacing:3px}.card{margin-top:16px;padding:18px;border:1px solid #3a1017;border-radius:18px;background:#0d0d11ee;box-shadow:0 20px 60px #000b}.label{font-size:11px;color:#999;letter-spacing:1.5px;margin:12px 0 7px}input{width:100%;padding:15px;border-radius:12px;border:1px solid #4a141b;background:#07070a;color:#fff;font-size:16px;letter-spacing:2px;outline:none}input:focus{border-color:#ff2638;box-shadow:0 0 0 3px #ff1e2d22}button{width:100%;padding:15px;margin-top:13px;border:1px solid #ff3040;border-radius:12px;color:#fff;font-weight:900;letter-spacing:1px;background:linear-gradient(90deg,#65000b,#f0182b,#65000b);background-size:200% 100%;animation:shine 3s linear infinite;box-shadow:0 0 24px #f113}
+@keyframes shine{to{background-position:200% 0}}.status{display:none;margin-top:15px;padding:14px;border-radius:12px;text-align:center;font-weight:900;letter-spacing:1.5px}.ok{display:block;background:#081c12;border:1px solid #18b76b;color:#45ff9c}.bad{display:block;background:#26080c;border:1px solid #e21b30;color:#ff5262}.scan{height:2px;background:#ff2333;margin:16px 0 0;box-shadow:0 0 12px #f22;animation:scan 2s infinite}@keyframes scan{0%,100%{transform:scaleX(.1);opacity:.2}50%{transform:scaleX(1);opacity:1}}.footer{text-align:center;color:#555;font-size:10px;margin-top:18px;letter-spacing:1px}
+</style></head><body><div class="wrap"><div class="top"><div class="logo">AHK</div><h1>ADMIN HOÀNG KHÔI</h1><div class="sub">SECURE ACCESS // HOLOGRAM SYSTEM</div></div><div class="card"><div class="label">ACCESS KEY</div><input id="key" autocomplete="off" placeholder="HK-XXXX-XXXX-XXXX"><button onclick="verify()">⚡ XÁC NHẬN KEY</button><div class="scan"></div><div id="status" class="status"></div></div><div class="card"><div class="label">SYSTEM</div><div style="color:#888;font-size:13px">Giao diện đã sẵn sàng để nối API Render và xác thực key + HSD.</div></div><div class="footer">ADMIN HOÀNG KHÔI • AHK SECURITY</div></div><script>function verify(){const s=document.getElementById('status'),k=document.getElementById('key').value.trim();if(!k){s.className='status bad';s.textContent='⚠ VUI LÒNG NHẬP KEY';return}s.className='status ok';s.textContent='✓ KEY ĐÃ ĐƯỢC GỬI KIỂM TRA';}</script></body></html>
