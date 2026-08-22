@@ -11,22 +11,17 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 const ROOT = __dirname;
 const DB = path.join(ROOT, "keys.json");
 
-/*
-  File app được bảo vệ.
-  Không được để express.static phục vụ trực tiếp file này.
-*/
-const APP_FILE = "donhayhoangkhoiv2vip.html";
-
 if (!ADMIN_PASSWORD) {
-  console.error("ERROR: ADMIN_PASSWORD chưa được cấu hình trên Render.");
+  console.error("ERROR: ADMIN_PASSWORD is not configured.");
   process.exit(1);
 }
 
 app.use(express.json({ limit: "1mb" }));
+app.use(express.static(ROOT));
 
-/* =====================================================
+/* =========================
    DATABASE
-===================================================== */
+========================= */
 
 function loadKeys() {
   try {
@@ -51,9 +46,9 @@ function saveKeys(keys) {
   );
 }
 
-/* =====================================================
-   KEY
-===================================================== */
+/* =========================
+   KEY GENERATOR
+========================= */
 
 function makeKey() {
   const part = () =>
@@ -65,10 +60,14 @@ function makeKey() {
   return `HK-${part()}-${part()}-${part()}`;
 }
 
-function getExpiration(type, custom) {
+/* =========================
+   EXPIRATION
+========================= */
+
+function expiration(type, custom) {
   const now = Date.now();
 
-  const durations = {
+  const map = {
     "1h": 3600000,
     "6h": 21600000,
     "12h": 43200000,
@@ -87,117 +86,32 @@ function getExpiration(type, custom) {
   }
 
   if (type === "custom") {
-    const date = new Date(custom);
+    const timestamp =
+      new Date(custom).getTime();
 
-    if (Number.isNaN(date.getTime())) {
-      return new Date(
-        now + durations["30d"]
-      ).toISOString();
+    if (!Number.isFinite(timestamp)) {
+      return null;
     }
 
-    return date.toISOString();
+    return new Date(timestamp).toISOString();
   }
 
   return new Date(
-    now + (durations[type] || durations["30d"])
+    now + (map[type] || map["30d"])
   ).toISOString();
 }
 
-/* =====================================================
-   DEVICE ID
-===================================================== */
-
-function cleanDeviceId(value) {
-  return String(value || "").trim();
-}
-
-/* =====================================================
-   SESSION
-===================================================== */
-
-/*
-  Session nằm trong RAM.
-
-  Render restart/redeploy thì session cũ sẽ mất,
-  người dùng chỉ cần nhập key lại.
-*/
-const sessions = new Map();
-
-const SESSION_TIME = 1000 * 60 * 60 * 24;
-
-function createSession(keyId, deviceId) {
-  const token =
-    crypto.randomBytes(32).toString("hex");
-
-  sessions.set(token, {
-    keyId,
-    deviceId,
-    createdAt: Date.now(),
-    expiresAt:
-      Date.now() + SESSION_TIME
-  });
-
-  return token;
-}
-
-function getCookie(req, name) {
-  const header = req.headers.cookie || "";
-
-  const cookies = {};
-
-  header.split(";").forEach(item => {
-    const index = item.indexOf("=");
-
-    if (index === -1) return;
-
-    const key =
-      item.slice(0, index).trim();
-
-    const value =
-      item.slice(index + 1).trim();
-
-    cookies[key] = decodeURIComponent(value);
-  });
-
-  return cookies[name];
-}
-
-function getSession(req) {
-  const token =
-    getCookie(req, "hk_session");
-
-  if (!token) return null;
-
-  const session =
-    sessions.get(token);
-
-  if (!session) return null;
-
-  if (
-    Date.now() >
-    session.expiresAt
-  ) {
-    sessions.delete(token);
-    return null;
-  }
-
-  return {
-    token,
-    ...session
-  };
-}
-
-/* =====================================================
+/* =========================
    ADMIN AUTH
-===================================================== */
+========================= */
 
 function adminAuth(req, res, next) {
-  const password =
+  const supplied =
     req.headers["x-admin-password"];
 
   if (
-    !password ||
-    password !== ADMIN_PASSWORD
+    !supplied ||
+    supplied !== ADMIN_PASSWORD
   ) {
     return res.status(401).json({
       error: "Unauthorized"
@@ -207,9 +121,9 @@ function adminAuth(req, res, next) {
   next();
 }
 
-/* =====================================================
-   ADMIN API
-===================================================== */
+/* =========================
+   ADMIN: LIST
+========================= */
 
 app.get(
   "/api/keys",
@@ -219,14 +133,17 @@ app.get(
   }
 );
 
+/* =========================
+   ADMIN: CREATE
+========================= */
+
 app.post(
   "/api/keys",
   adminAuth,
   (req, res) => {
-
     const keys = loadKeys();
 
-    const duration =
+    const type =
       String(
         req.body.duration || "30d"
       );
@@ -240,8 +157,8 @@ app.post(
         new Date().toISOString(),
 
       expiresAt:
-        getExpiration(
-          duration,
+        expiration(
+          type,
           req.body.custom
         ),
 
@@ -253,25 +170,25 @@ app.post(
     };
 
     keys.push(key);
-
     saveKeys(keys);
 
     res.json(key);
   }
 );
 
+/* =========================
+   ADMIN: UPDATE
+========================= */
+
 app.patch(
   "/api/keys/:id",
   adminAuth,
   (req, res) => {
-
     const keys = loadKeys();
 
-    const key =
-      keys.find(
-        item =>
-          item.id === req.params.id
-      );
+    const key = keys.find(
+      x => x.id === req.params.id
+    );
 
     if (!key) {
       return res.status(404).json({
@@ -289,9 +206,6 @@ app.patch(
         Boolean(req.body.disabled);
     }
 
-    /*
-      Admin có thể reset thiết bị.
-    */
     if (
       req.body.resetDevice === true
     ) {
@@ -305,17 +219,19 @@ app.patch(
   }
 );
 
+/* =========================
+   ADMIN: DELETE
+========================= */
+
 app.delete(
   "/api/keys/:id",
   adminAuth,
   (req, res) => {
-
     const keys = loadKeys();
 
     const filtered =
       keys.filter(
-        item =>
-          item.id !== req.params.id
+        x => x.id !== req.params.id
       );
 
     saveKeys(filtered);
@@ -326,9 +242,9 @@ app.delete(
   }
 );
 
-/* =====================================================
+/* =========================
    VERIFY KEY
-===================================================== */
+========================= */
 
 app.post(
   "/api/verify",
@@ -342,15 +258,15 @@ app.post(
       .toUpperCase();
 
     const deviceId =
-      cleanDeviceId(
-        req.body.deviceId
-      );
+      String(
+        req.body.deviceId || ""
+      ).trim();
 
     if (!input) {
       return res.status(400).json({
         valid: false,
         code: "KEY_REQUIRED",
-        message: "Vui lòng nhập key"
+        message: "Key is required"
       });
     }
 
@@ -358,7 +274,7 @@ app.post(
       return res.status(400).json({
         valid: false,
         code: "DEVICE_REQUIRED",
-        message: "Không xác định được thiết bị"
+        message: "Device ID is required"
       });
     }
 
@@ -366,8 +282,9 @@ app.post(
 
     const key =
       keys.find(
-        item =>
-          String(item.key)
+        x =>
+          String(x.key)
+            .trim()
             .toUpperCase() === input
       );
 
@@ -375,7 +292,7 @@ app.post(
       return res.status(404).json({
         valid: false,
         code: "INVALID_KEY",
-        message: "Key không tồn tại"
+        message: "Invalid key"
       });
     }
 
@@ -383,7 +300,7 @@ app.post(
       return res.status(403).json({
         valid: false,
         code: "KEY_DISABLED",
-        message: "Key đã bị khóa"
+        message: "Key is disabled"
       });
     }
 
@@ -398,16 +315,14 @@ app.post(
       return res.status(403).json({
         valid: false,
         code: "KEY_EXPIRED",
-        message: "Key đã hết hạn"
+        message: "Key expired"
       });
     }
 
     /*
-      KEY CHƯA CÓ DEVICE
-      => khóa vào thiết bị đầu tiên.
+      KEY CHƯA GẮN DEVICE
+      => thiết bị đầu tiên được đăng ký
     */
-
-    let firstActivation = false;
 
     if (!key.deviceId) {
 
@@ -419,177 +334,45 @@ app.post(
 
       saveKeys(keys);
 
-      firstActivation = true;
-
-    } else if (
-      key.deviceId !== deviceId
-    ) {
-
-      /*
-        KEY ĐÃ THUỘC THIẾT BỊ KHÁC
-      */
-
-      return res.status(403).json({
-        valid: false,
-        code: "DEVICE_MISMATCH",
-        message:
-          "Key đã được kích hoạt trên thiết bị khác"
+      return res.json({
+        valid: true,
+        firstActivation: true,
+        deviceBound: true,
+        expiresAt: key.expiresAt
       });
     }
 
     /*
-      Tạo session.
+      ĐÚNG DEVICE
     */
-
-    const token =
-      createSession(
-        key.id,
-        deviceId
-      );
-
-    /*
-      Cookie HttpOnly:
-      JavaScript bên ngoài không đọc được.
-    */
-
-    res.setHeader(
-      "Set-Cookie",
-      [
-        `hk_session=${encodeURIComponent(token)}`,
-        "Path=/",
-        "HttpOnly",
-        "SameSite=Lax",
-        "Max-Age=86400",
-        "Secure"
-      ].join("; ")
-    );
-
-    /*
-      Trả thông tin key cho key.html
-      để hiển thị key + hạn sử dụng.
-    */
-
-    return res.json({
-      valid: true,
-
-      firstActivation,
-
-      key: key.key,
-
-      expiresAt:
-        key.expiresAt,
-
-      deviceBound: true,
-
-      sessionCreated: true
-    });
-  }
-);
-
-/* =====================================================
-   SESSION INFO
-===================================================== */
-
-app.get(
-  "/api/session",
-  (req, res) => {
-
-    const session =
-      getSession(req);
-
-    if (!session) {
-      return res.status(401).json({
-        authenticated: false
-      });
-    }
-
-    const keys =
-      loadKeys();
-
-    const key =
-      keys.find(
-        item =>
-          item.id ===
-          session.keyId
-      );
-
-    if (!key) {
-      return res.status(401).json({
-        authenticated: false
-      });
-    }
-
-    if (key.disabled) {
-      return res.status(403).json({
-        authenticated: false,
-        code: "KEY_DISABLED"
-      });
-    }
 
     if (
-      key.expiresAt !== null &&
-      key.expiresAt &&
-      Date.now() >=
-        new Date(
-          key.expiresAt
-        ).getTime()
+      key.deviceId === deviceId
     ) {
-      return res.status(403).json({
-        authenticated: false,
-        code: "KEY_EXPIRED"
+      return res.json({
+        valid: true,
+        firstActivation: false,
+        deviceBound: true,
+        expiresAt: key.expiresAt
       });
     }
 
-    if (
-      key.deviceId !==
-      session.deviceId
-    ) {
-      return res.status(403).json({
-        authenticated: false,
-        code: "DEVICE_MISMATCH"
-      });
-    }
+    /*
+      DEVICE KHÁC
+    */
 
-    res.json({
-      authenticated: true,
-      key: key.key,
-      expiresAt:
-        key.expiresAt
+    return res.status(403).json({
+      valid: false,
+      code: "DEVICE_MISMATCH",
+      message:
+        "Key is already activated on another device"
     });
   }
 );
 
-/* =====================================================
-   LOGOUT
-===================================================== */
-
-app.post(
-  "/api/logout",
-  (req, res) => {
-
-    const session =
-      getSession(req);
-
-    if (session) {
-      sessions.delete(
-        session.token
-      );
-    }
-
-    res.setHeader(
-      "Set-Cookie",
-      "hk_session=; Path=/; HttpOnly; Max-Age=0; SameSite=Lax; Secure"
-    );
-
-    res.json({
-      ok: true
-    });
-  }
-);
-
-/* =====================================================
+/* =========================
    HEALTH
-===================================================== */
+========================= */
 
 app.get(
   "/api/health",
@@ -597,136 +380,21 @@ app.get(
     res.json({
       ok: true,
       service: "hk-key-manager",
-      system: "1-key-1-device",
-      sessionProtection: true
+      system: "1-key-1-device"
     });
   }
 );
 
-/* =====================================================
-   PROTECTED APP
-===================================================== */
-
-/*
-  QUAN TRỌNG:
-
-  Route này phải nằm TRƯỚC express.static.
-
-  Người không có session sẽ bị đưa về key.html.
-*/
-
-app.get(
-  `/${APP_FILE}`,
-  (req, res) => {
-
-    const session =
-      getSession(req);
-
-    if (!session) {
-      return res.redirect(
-        "/key.html?login=required"
-      );
-    }
-
-    const keys = loadKeys();
-
-    const key =
-      keys.find(
-        item =>
-          item.id ===
-          session.keyId
-      );
-
-    if (!key) {
-      return res.redirect(
-        "/key.html?session=invalid"
-      );
-    }
-
-    if (key.disabled) {
-      return res.redirect(
-        "/key.html?session=disabled"
-      );
-    }
-
-    if (
-      key.expiresAt !== null &&
-      key.expiresAt &&
-      Date.now() >=
-        new Date(
-          key.expiresAt
-        ).getTime()
-    ) {
-      return res.redirect(
-        "/key.html?session=expired"
-      );
-    }
-
-    if (
-      key.deviceId !==
-      session.deviceId
-    ) {
-      return res.redirect(
-        "/key.html?session=device"
-      );
-    }
-
-    /*
-      Session hợp lệ.
-      Mới trả file app.
-    */
-
-    return res.sendFile(
-      path.join(
-        ROOT,
-        APP_FILE
-      )
-    );
-  }
-);
-
-/* =====================================================
-   STATIC FILES
-===================================================== */
-
-/*
-  Chặn express.static phục vụ APP_FILE.
-  Nếu không có đoạn này, người dùng có thể bypass
-  route bảo vệ ở trên.
-*/
-
-app.use(
-  (req, res, next) => {
-
-    if (
-      req.path ===
-      `/${APP_FILE}`
-    ) {
-      return res.redirect(
-        "/key.html?login=required"
-      );
-    }
-
-    next();
-  }
-);
-
-app.use(
-  express.static(ROOT, {
-    index: false
-  })
-);
-
-/* =====================================================
+/* =========================
    START
-===================================================== */
+========================= */
 
 app.listen(
   PORT,
   "0.0.0.0",
   () => {
     console.log(
-      `HK Key Manager listening on ${PORT}`
+      `HK Key Manager running on ${PORT}`
     );
   }
 );
