@@ -1,108 +1,291 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>AHK KEY GATE</title>
+<title>HK KEY SYSTEM</title>
+
 <style>
 *{box-sizing:border-box}
-html,body{margin:0;min-height:100%;font-family:system-ui,Arial;color:#fff;background:#020205;overflow:hidden}
-body:before{content:"";position:fixed;inset:0;background:linear-gradient(#ff17300d 1px,transparent 1px),linear-gradient(90deg,#ff17300d 1px,transparent 1px);background-size:34px 34px;animation:grid 10s linear infinite}
-@keyframes grid{to{background-position:34px 34px}}
-canvas{position:fixed;inset:0;pointer-events:none}
-.wrap{position:relative;z-index:2;min-height:100vh;display:grid;place-items:center;padding:22px}
-.panel{width:min(440px,100%);padding:22px;border:1px solid #46121b;border-radius:24px;background:linear-gradient(145deg,#0e0e14ed,#050507ed);box-shadow:0 0 35px #ff173329,0 30px 100px #000;backdrop-filter:blur(10px)}
-.panel:before{content:"";display:block;height:1px;background:linear-gradient(90deg,transparent,#ff1935,transparent);animation:beam 2.5s linear infinite}
-@keyframes beam{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
-.logo{width:94px;height:94px;margin:12px auto 18px;display:grid;place-items:center;border:1px solid #ff2b42;border-radius:28px;background:radial-gradient(circle,#37070d,#08080b 65%);font-size:31px;font-weight:1000;letter-spacing:4px;box-shadow:0 0 25px #ff173355,0 0 80px #ff173322;position:relative;animation:pulse 1.8s ease-in-out infinite}
-.logo:before,.logo:after{content:"";position:absolute;inset:-8px;border:1px solid #ff193544;border-radius:31px;animation:spin 6s linear infinite}
-.logo:after{inset:-16px;border-style:dashed;opacity:.6;animation:spin 10s linear infinite reverse}
-@keyframes pulse{50%{transform:scale(1.035);box-shadow:0 0 40px #ff173366,0 0 100px #ff173326}}
-@keyframes spin{to{transform:rotate(360deg)}}
-h1{text-align:center;font-size:25px;letter-spacing:3px;margin:0}
-.sub{text-align:center;color:#7e808a;font-size:9px;letter-spacing:3px;margin-top:6px}
-.status{text-align:center;margin:18px 0 13px;color:#55ffa2;font-size:10px;letter-spacing:2px}
-.dot{display:inline-block;width:6px;height:6px;background:#55ffa2;border-radius:50%;box-shadow:0 0 12px #55ffa2;margin-right:6px;animation:blink 1s infinite}
-@keyframes blink{50%{opacity:.2}}
-label{display:block;color:#777;font-size:10px;letter-spacing:2px;margin-bottom:7px}
-input{width:100%;padding:15px;border-radius:12px;border:1px solid #41141b;background:#050508;color:#fff;outline:none;font-size:16px;letter-spacing:1px}
-input:focus{border-color:#ff2940;box-shadow:0 0 25px #ff17332b}
-button{width:100%;margin-top:11px;padding:15px;border:1px solid #ff2940;border-radius:12px;color:#fff;font-weight:1000;letter-spacing:1.5px;background:linear-gradient(90deg,#62000a,#ef1930,#62000a);background-size:200%;box-shadow:0 0 25px #ff17332a;animation:shine 2.5s linear infinite}
-button:disabled{opacity:.55}
-@keyframes shine{to{background-position:200%}}
-#msg{min-height:20px;text-align:center;margin-top:11px;font-size:11px}
-.success{color:#55ffa2}.error{color:#ff596b}
-.loader{display:none;width:20px;height:20px;margin:12px auto 0;border:2px solid #40131a;border-top-color:#ff2840;border-radius:50%;animation:spin .7s linear infinite}
-.foot{margin-top:17px;text-align:center;color:#51535c;font-size:8px;letter-spacing:2px}
+
+html,body{
+  margin:0;
+  min-height:100%;
+  background:#020205;
+  color:#fff;
+  font-family:Arial,sans-serif;
+}
+
+body{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  position:relative;
+}
+
+body:before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:
+    linear-gradient(#ff17320b 1px,transparent 1px),
+    linear-gradient(90deg,#ff17320b 1px,transparent 1px);
+  background-size:35px 35px;
+  animation:grid 12s linear infinite;
+}
+
+@keyframes grid{
+  to{
+    background-position:35px 35px;
+  }
+}
+
+.glow{
+  position:fixed;
+  width:400px;
+  height:400px;
+  border-radius:50%;
+  background:#ff1732;
+  filter:blur(180px);
+  opacity:.08;
+  animation:move 8s ease-in-out infinite alternate;
+}
+
+@keyframes move{
+  from{transform:translate(-25vw,-15vh)}
+  to{transform:translate(25vw,15vh)}
+}
+
+.card{
+  position:relative;
+  z-index:2;
+  width:min(430px,92%);
+  padding:28px;
+  border-radius:25px;
+  border:1px solid #55131c;
+  background:#08080cf2;
+  box-shadow:
+    0 0 45px #ff173329,
+    0 30px 100px #000;
+  backdrop-filter:blur(15px);
+}
+
+.logo{
+  width:92px;
+  height:92px;
+  margin:0 auto 20px;
+  display:grid;
+  place-items:center;
+  border:1px solid #ff2944;
+  border-radius:27px;
+  background:radial-gradient(circle,#3c0710,#08080c 70%);
+  font-size:25px;
+  font-weight:1000;
+  letter-spacing:4px;
+  box-shadow:
+    0 0 35px #ff173355,
+    inset 0 0 30px #ff17331c;
+  animation:pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse{
+  50%{
+    transform:scale(1.04);
+    box-shadow:0 0 55px #ff173366;
+  }
+}
+
+h1{
+  margin:0;
+  text-align:center;
+  font-size:24px;
+  letter-spacing:3px;
+}
+
+.sub{
+  margin-top:7px;
+  text-align:center;
+  color:#777;
+  font-size:9px;
+  letter-spacing:3px;
+}
+
+.status{
+  margin:20px 0;
+  text-align:center;
+  color:#55ffa2;
+  font-size:10px;
+  letter-spacing:2px;
+}
+
+.dot{
+  display:inline-block;
+  width:7px;
+  height:7px;
+  margin-right:6px;
+  border-radius:50%;
+  background:#55ffa2;
+  box-shadow:0 0 12px #55ffa2;
+}
+
+label{
+  display:block;
+  margin-bottom:8px;
+  color:#777;
+  font-size:10px;
+  letter-spacing:2px;
+}
+
+input{
+  width:100%;
+  padding:15px;
+  border:1px solid #45131b;
+  border-radius:12px;
+  outline:none;
+  background:#050507;
+  color:#fff;
+  text-align:center;
+  font-size:16px;
+  letter-spacing:1px;
+}
+
+input:focus{
+  border-color:#ff2943;
+  box-shadow:0 0 25px #ff17332b;
+}
+
+button{
+  width:100%;
+  margin-top:12px;
+  padding:15px;
+  border:1px solid #ff2943;
+  border-radius:12px;
+  color:#fff;
+  background:linear-gradient(
+    90deg,
+    #62000b,
+    #e71932,
+    #62000b
+  );
+  background-size:200%;
+  font-weight:1000;
+  letter-spacing:1.5px;
+  cursor:pointer;
+  box-shadow:0 0 25px #ff17332b;
+}
+
+button:hover{
+  box-shadow:0 0 40px #ff173355;
+  transform:translateY(-1px);
+}
+
+button:disabled{
+  opacity:.55;
+}
+
+#message{
+  min-height:22px;
+  margin-top:14px;
+  text-align:center;
+  font-size:11px;
+}
+
+.success{color:#55ffa2}
+.error{color:#ff5369}
+.loading{color:#ffcc55}
+
+#spinner{
+  display:none;
+  width:22px;
+  height:22px;
+  margin:12px auto 0;
+  border:2px solid #40121a;
+  border-top-color:#ff2943;
+  border-radius:50%;
+  animation:spin .7s linear infinite;
+}
+
+@keyframes spin{
+  to{transform:rotate(360deg)}
+}
+
+.footer{
+  margin-top:20px;
+  text-align:center;
+  color:#555;
+  font-size:8px;
+  letter-spacing:2px;
+}
 </style>
 </head>
 
 <body>
-<canvas id="fx"></canvas>
 
-<div class="wrap">
-<section class="panel">
+<div class="glow"></div>
 
-<div class="logo">AHK</div>
+<div class="card">
 
-<h1>ADMIN HOÀNG KHÔI</h1>
-<div class="sub">ADVANCED KEY AUTHENTICATION CORE</div>
+  <div class="logo">AHK</div>
 
-<div class="status">
-<span class="dot"></span>SECURE SERVER ONLINE
-</div>
+  <h1>KEY AUTHENTICATION</h1>
 
-<label>LICENSE KEY</label>
+  <div class="sub">
+    ADVANCED SECURITY SYSTEM
+  </div>
 
-<input
- id="key"
- autocomplete="off"
- autocapitalize="characters"
- placeholder="HK-XXXX-XXXX-XXXX">
+  <div class="status">
+    <span class="dot"></span>
+    SECURE SERVER ONLINE
+  </div>
 
-<button id="btn" onclick="verifyKey()">
-⚡ AUTHENTICATE ACCESS
-</button>
+  <label for="keyInput">
+    LICENSE KEY
+  </label>
 
-<div id="loader" class="loader"></div>
-<div id="msg"></div>
+  <input
+    id="keyInput"
+    type="text"
+    autocomplete="off"
+    autocapitalize="characters"
+    placeholder="HK-XXXX-XXXX-XXXX"
+  >
 
-<div class="foot">
-DEVICE LOCK • SERVER VERIFIED • AHK CORE
-</div>
+  <button
+    id="verifyButton"
+    type="button"
+  >
+    ⚡ XÁC NHẬN KEY
+  </button>
 
-</section>
+  <div id="spinner"></div>
+
+  <div id="message"></div>
+
+  <div class="footer">
+    1 KEY • 1 DEVICE • SERVER VERIFIED
+  </div>
+
 </div>
 
 <script>
 
-/* =========================
-   CẤU HÌNH
-========================= */
+const VERIFY_URL =
+  "https://hk-key-manager.onrender.com/api/verify";
 
-const API_URL =
-"https://hk-key-manager.onrender.com/api/verify";
-
-/*
- * THAY DÒNG BÊN DƯỚI bằng URL APP hiện tại.
- * Ví dụ:
- * const APP_URL = "https://ten-app-cua-ban.com";
- */
 const APP_URL =
-"const APP_URL =
-"https://hk-key-manager.onrender.com/donhayhoangkhoiv2vip.html";";
-
-const APP_ID = "all";
+  "https://hk-key-manager.onrender.com/donhayhoangkhoiv2vip.html";
 
 
-/* =========================
-   DEVICE ID
-========================= */
+/* DEVICE ID */
 
 function getDeviceId(){
 
   let id =
-    localStorage.getItem("ahk_device_id");
+    localStorage.getItem(
+      "ahk_device_id"
+    );
 
   if(!id){
 
@@ -111,11 +294,7 @@ function getDeviceId(){
       (
         crypto.randomUUID
           ? crypto.randomUUID()
-          : Date.now() +
-            "-" +
-            Math.random()
-              .toString(36)
-              .slice(2)
+          : Date.now()+"-"+Math.random()
       );
 
     localStorage.setItem(
@@ -128,84 +307,104 @@ function getDeviceId(){
 }
 
 
-/* =========================
-   ÂM THANH
-========================= */
+/* AUDIO */
 
-let audio;
+let audioContext=null;
 
-function sound(
-  frequency = 900,
-  duration = .06,
-  type = "sine"
+function beep(
+  frequency,
+  duration,
+  type="sine"
 ){
 
   try{
 
-    const AudioContext =
+    const AC =
       window.AudioContext ||
       window.webkitAudioContext;
 
-    if(!audio)
-      audio = new AudioContext();
+    if(!AC)return;
 
-    const oscillator =
-      audio.createOscillator();
+    if(!audioContext)
+      audioContext=new AC();
+
+    const osc =
+      audioContext.createOscillator();
 
     const gain =
-      audio.createGain();
+      audioContext.createGain();
 
-    oscillator.type = type;
-    oscillator.frequency.value =
+    osc.type=type;
+    osc.frequency.value=
       frequency;
 
     gain.gain.setValueAtTime(
       .0001,
-      audio.currentTime
+      audioContext.currentTime
     );
 
     gain.gain.exponentialRampToValueAtTime(
-      .07,
-      audio.currentTime + .008
+      .06,
+      audioContext.currentTime+.01
     );
 
     gain.gain.exponentialRampToValueAtTime(
       .0001,
-      audio.currentTime + duration
+      audioContext.currentTime+duration
     );
 
-    oscillator.connect(gain);
-    gain.connect(audio.destination);
+    osc.connect(gain);
+    gain.connect(
+      audioContext.destination
+    );
 
-    oscillator.start();
+    osc.start();
 
-    oscillator.stop(
-      audio.currentTime +
-      duration +
-      .01
+    osc.stop(
+      audioContext.currentTime+
+      duration+
+      .02
     );
 
   }catch(e){}
 }
 
 
-/* =========================
-   XÁC THỰC KEY
-========================= */
+/* MESSAGE */
+
+function message(
+  text,
+  type
+){
+
+  const box =
+    document.getElementById(
+      "message"
+    );
+
+  box.className=type;
+  box.textContent=text;
+}
+
+
+/* VERIFY */
 
 async function verifyKey(){
 
   const input =
-    document.getElementById("key");
+    document.getElementById(
+      "keyInput"
+    );
 
   const button =
-    document.getElementById("btn");
+    document.getElementById(
+      "verifyButton"
+    );
 
-  const message =
-    document.getElementById("msg");
-
-  const loader =
-    document.getElementById("loader");
+  const spinner =
+    document.getElementById(
+      "spinner"
+    );
 
   const key =
     input.value
@@ -214,38 +413,33 @@ async function verifyKey(){
 
   if(!key){
 
-    message.className = "error";
-    message.textContent =
-      "VUI LÒNG NHẬP KEY";
+    message(
+      "✕ VUI LÒNG NHẬP KEY",
+      "error"
+    );
 
-    sound(180,.14,"square");
+    beep(180,.15,"square");
 
-    return;
-  }
-
-  if(
-    APP_URL ===
-    "DÁN_URL_APP_HIỆN_TẠI_VÀO_ĐÂY"
-  ){
-
-    message.className = "error";
-    message.textContent =
-      "CHƯA CẤU HÌNH URL APP";
+    input.focus();
 
     return;
   }
 
-  button.disabled = true;
-  loader.style.display = "block";
-  message.textContent = "";
+  button.disabled=true;
+  spinner.style.display="block";
 
-  sound(1100,.05);
+  message(
+    "ĐANG XÁC THỰC...",
+    "loading"
+  );
+
+  beep(900,.05);
 
   try{
 
     const response =
       await fetch(
-        API_URL,
+        VERIFY_URL,
         {
           method:"POST",
 
@@ -255,15 +449,8 @@ async function verifyKey(){
           },
 
           body:JSON.stringify({
-
             key:key,
-
-            deviceId:
-              getDeviceId(),
-
-            appId:
-              APP_ID
-
+            deviceId:getDeviceId()
           })
         }
       );
@@ -271,186 +458,122 @@ async function verifyKey(){
     const result =
       await response.json();
 
-    if(result.valid){
+    if(
+      response.ok &&
+      result.valid===true
+    ){
 
-      message.className =
-        "success";
-
-      message.textContent =
+      message(
         result.firstActivation
-          ? "✓ KEY ACTIVATED • DEVICE LOCKED"
-          : "✓ KEY VERIFIED";
+          ? "✓ KÍCH HOẠT THÀNH CÔNG"
+          : "✓ KEY XÁC THỰC THÀNH CÔNG",
+        "success"
+      );
 
-      sound(720,.07);
+      beep(720,.08);
 
       setTimeout(
-        () => sound(1080,.1),
-        90
+        ()=>beep(1080,.1),
+        100
       );
 
       setTimeout(
-        () => {
-
-          window.location.href =
+        ()=>{
+          window.location.href=
             APP_URL;
-
         },
-        700
+        900
+      );
+
+      return;
+    }
+
+    if(
+      result.code===
+      "DEVICE_MISMATCH"
+    ){
+
+      message(
+        "✕ KEY ĐÃ ĐƯỢC DÙNG TRÊN THIẾT BỊ KHÁC",
+        "error"
+      );
+
+    }else if(
+      result.code===
+      "KEY_EXPIRED"
+    ){
+
+      message(
+        "✕ KEY ĐÃ HẾT HẠN",
+        "error"
+      );
+
+    }else if(
+      result.code===
+      "KEY_DISABLED"
+    ){
+
+      message(
+        "✕ KEY ĐÃ BỊ KHÓA",
+        "error"
       );
 
     }else{
 
-      message.className =
-        "error";
-
-      if(
-        result.code ===
-        "DEVICE_MISMATCH"
-      ){
-
-        message.textContent =
-          "✕ KEY ĐÃ ĐƯỢC KÍCH HOẠT TRÊN THIẾT BỊ KHÁC";
-
-      }else{
-
-        message.textContent =
-          "✕ " +
-          (
-            result.message ||
-            "KEY KHÔNG HỢP LỆ"
-          );
-      }
-
-      sound(180,.15,"square");
+      message(
+        "✕ KEY KHÔNG HỢP LỆ",
+        "error"
+      );
     }
+
+    beep(180,.16,"square");
 
   }catch(error){
 
-    message.className =
-      "error";
+    console.error(error);
 
-    message.textContent =
-      "✕ KHÔNG KẾT NỐI ĐƯỢC SERVER";
+    message(
+      "✕ KHÔNG KẾT NỐI ĐƯỢC SERVER",
+      "error"
+    );
 
-    sound(180,.15,"square");
+    beep(180,.16,"square");
 
   }finally{
 
-    button.disabled = false;
-    loader.style.display = "none";
+    button.disabled=false;
+    spinner.style.display="none";
   }
 }
 
 
-/* Enter để xác nhận */
+/* CLICK */
 
 document
-.getElementById("key")
-.addEventListener(
-  "keydown",
-  function(e){
-
-    if(e.key === "Enter")
-      verifyKey();
-
-  }
-);
-
-
-/* =========================
-   HIỆU ỨNG PARTICLE
-========================= */
-
-const canvas =
-  document.getElementById("fx");
-
-const ctx =
-  canvas.getContext("2d");
-
-let particles = [];
-
-function resize(){
-
-  canvas.width =
-    innerWidth *
-    devicePixelRatio;
-
-  canvas.height =
-    innerHeight *
-    devicePixelRatio;
-
-  ctx.setTransform(
-    devicePixelRatio,
-    0,
-    0,
-    devicePixelRatio,
-    0,
-    0
+  .getElementById(
+    "verifyButton"
+  )
+  .addEventListener(
+    "click",
+    verifyKey
   );
 
-  particles =
-    Array.from(
-      {length:55},
-      () => ({
-        x:
-          Math.random() *
-          innerWidth,
 
-        y:
-          Math.random() *
-          innerHeight,
+/* ENTER */
 
-        speed:
-          .15 +
-          Math.random() *
-          .55
-      })
-    );
-}
-
-function animate(){
-
-  ctx.clearRect(
-    0,
-    0,
-    innerWidth,
-    innerHeight
+document
+  .getElementById(
+    "keyInput"
+  )
+  .addEventListener(
+    "keydown",
+    e=>{
+      if(e.key==="Enter")
+        verifyKey();
+    }
   );
-
-  for(
-    const p of particles
-  ){
-
-    p.y -= p.speed;
-
-    if(p.y < 0)
-      p.y = innerHeight;
-
-    ctx.fillStyle =
-      "#ff294055";
-
-    ctx.fillRect(
-      p.x,
-      p.y,
-      1.5,
-      1.5
-    );
-  }
-
-  requestAnimationFrame(
-    animate
-  );
-}
-
-addEventListener(
-  "resize",
-  resize
-);
-
-resize();
-animate();
 
 </script>
 
 </body>
-  </html>
+   </html>
