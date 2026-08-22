@@ -1,1 +1,712 @@
-[]
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>AHK KEY GATE</title>
+
+<style>
+*{box-sizing:border-box}
+
+html,body{
+  margin:0;
+  min-height:100%;
+  font-family:system-ui,Arial,sans-serif;
+  color:#f7f7f8;
+  background:#020205;
+  overflow:hidden;
+}
+
+body:before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:
+    linear-gradient(#ff17300d 1px,transparent 1px),
+    linear-gradient(90deg,#ff17300d 1px,transparent 1px);
+  background-size:34px 34px;
+  animation:grid 10s linear infinite;
+}
+
+@keyframes grid{
+  to{background-position:34px 34px}
+}
+
+canvas{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+}
+
+.wrap{
+  position:relative;
+  z-index:2;
+  min-height:100vh;
+  display:grid;
+  place-items:center;
+  padding:22px;
+}
+
+.panel{
+  width:min(440px,100%);
+  padding:22px;
+  border:1px solid #46121b;
+  border-radius:24px;
+  background:linear-gradient(145deg,#0e0e14ed,#050507ed);
+  box-shadow:
+    0 0 35px #ff173329,
+    0 30px 100px #000;
+  backdrop-filter:blur(10px);
+  overflow:hidden;
+}
+
+.panel:before{
+  content:"";
+  display:block;
+  height:1px;
+  background:linear-gradient(
+    90deg,
+    transparent,
+    #ff1935,
+    transparent
+  );
+  animation:beam 2.5s linear infinite;
+}
+
+@keyframes beam{
+  from{transform:translateX(-100%)}
+  to{transform:translateX(100%)}
+}
+
+.logo{
+  width:94px;
+  height:94px;
+  margin:12px auto 18px;
+  display:grid;
+  place-items:center;
+  border:1px solid #ff2b42;
+  border-radius:28px;
+  background:radial-gradient(circle,#37070d,#08080b 65%);
+  font-size:31px;
+  font-weight:1000;
+  letter-spacing:4px;
+  box-shadow:
+    0 0 25px #ff173355,
+    0 0 80px #ff173322;
+  position:relative;
+  animation:pulse 1.8s ease-in-out infinite;
+}
+
+.logo:before,
+.logo:after{
+  content:"";
+  position:absolute;
+  inset:-8px;
+  border:1px solid #ff193544;
+  border-radius:31px;
+  animation:spin 6s linear infinite;
+}
+
+.logo:after{
+  inset:-16px;
+  border-style:dashed;
+  opacity:.6;
+  animation:spin 10s linear infinite reverse;
+}
+
+@keyframes pulse{
+  50%{
+    transform:scale(1.035);
+    box-shadow:
+      0 0 40px #ff173366,
+      0 0 100px #ff173326;
+  }
+}
+
+@keyframes spin{
+  to{transform:rotate(360deg)}
+}
+
+h1{
+  text-align:center;
+  font-size:25px;
+  letter-spacing:3px;
+  margin:0;
+}
+
+.sub{
+  text-align:center;
+  color:#7e808a;
+  font-size:9px;
+  letter-spacing:3px;
+  margin-top:6px;
+}
+
+.status{
+  text-align:center;
+  margin:18px 0 13px;
+  color:#55ffa2;
+  font-size:10px;
+  letter-spacing:2px;
+}
+
+.dot{
+  display:inline-block;
+  width:6px;
+  height:6px;
+  background:#55ffa2;
+  border-radius:50%;
+  box-shadow:0 0 12px #55ffa2;
+  margin-right:6px;
+  animation:blink 1s infinite;
+}
+
+@keyframes blink{
+  50%{opacity:.2}
+}
+
+label{
+  display:block;
+  color:#777;
+  font-size:10px;
+  letter-spacing:2px;
+  margin-bottom:7px;
+}
+
+input{
+  width:100%;
+  padding:15px;
+  border-radius:12px;
+  border:1px solid #41141b;
+  background:#050508;
+  color:#fff;
+  outline:none;
+  font-size:16px;
+  letter-spacing:1px;
+}
+
+input:focus{
+  border-color:#ff2940;
+  box-shadow:0 0 25px #ff17332b;
+}
+
+button{
+  width:100%;
+  margin-top:11px;
+  padding:15px;
+  border:1px solid #ff2940;
+  border-radius:12px;
+  color:#fff;
+  font-weight:1000;
+  letter-spacing:1.5px;
+  background:
+    linear-gradient(
+      90deg,
+      #62000a,
+      #ef1930,
+      #62000a
+    );
+  background-size:200%;
+  box-shadow:0 0 25px #ff17332a;
+  animation:shine 2.5s linear infinite;
+}
+
+button:disabled{
+  opacity:.55;
+}
+
+@keyframes shine{
+  to{background-position:200%}
+}
+
+#msg{
+  min-height:20px;
+  text-align:center;
+  margin-top:11px;
+  font-size:11px;
+}
+
+.success{
+  color:#55ffa2;
+}
+
+.error{
+  color:#ff596b;
+}
+
+.loader{
+  display:none;
+  width:20px;
+  height:20px;
+  margin:12px auto 0;
+  border:2px solid #40131a;
+  border-top-color:#ff2840;
+  border-radius:50%;
+  animation:spin .7s linear infinite;
+}
+
+.foot{
+  margin-top:17px;
+  text-align:center;
+  color:#51535c;
+  font-size:8px;
+  letter-spacing:2px;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="fx"></canvas>
+
+<div class="wrap">
+
+<section class="panel">
+
+<div class="logo">AHK</div>
+
+<h1>ADMIN HOÀNG KHÔI</h1>
+
+<div class="sub">
+ADVANCED KEY AUTHENTICATION CORE
+</div>
+
+<div class="status">
+<span class="dot"></span>
+SECURE SERVER ONLINE
+</div>
+
+<label>LICENSE KEY</label>
+
+<input
+  id="key"
+  autocomplete="off"
+  autocapitalize="characters"
+  placeholder="HK-XXXX-XXXX-XXXX"
+>
+
+<button id="btn" onclick="verifyKey()">
+⚡ AUTHENTICATE ACCESS
+</button>
+
+<div id="loader" class="loader"></div>
+
+<div id="msg"></div>
+
+<div class="foot">
+DEVICE LOCK • SERVER VERIFIED • AHK CORE
+</div>
+
+</section>
+
+</div>
+
+<script>
+
+/* =========================
+   CẤU HÌNH
+========================= */
+
+/*
+  API Render của bạn.
+*/
+const API_URL =
+  "https://hk-key-manager.onrender.com/api/verify";
+
+/*
+  URL APP HIỆN TẠI.
+
+  THAY DÒNG NÀY bằng URL app hiện tại
+  của bạn.
+*/
+const APP_URL =
+  "DÁN_URL_APP_HIỆN_TẠI_VÀO_ĐÂY";
+
+/*
+  Nếu key chỉ dùng cho tất cả app:
+*/
+const APP_ID = "all";
+
+
+/* =========================
+   DEVICE ID
+========================= */
+
+function getDeviceId(){
+
+  let id =
+    localStorage.getItem("ahk_device_id");
+
+  if(!id){
+
+    if(
+      window.crypto &&
+      crypto.randomUUID
+    ){
+
+      id =
+        "AHK-" +
+        crypto.randomUUID();
+
+    }else{
+
+      id =
+        "AHK-" +
+        Date.now() +
+        "-" +
+        Math.random()
+          .toString(36)
+          .slice(2);
+
+    }
+
+    localStorage.setItem(
+      "ahk_device_id",
+      id
+    );
+  }
+
+  return id;
+}
+
+
+/* =========================
+   SOUND
+========================= */
+
+const AudioCtx =
+  window.AudioContext ||
+  window.webkitAudioContext;
+
+let audio;
+
+function sound(freq=900,duration=.06,type="sine"){
+
+  try{
+
+    if(!audio)
+      audio = new AudioCtx();
+
+    const osc =
+      audio.createOscillator();
+
+    const gain =
+      audio.createGain();
+
+    osc.type = type;
+
+    osc.frequency.value = freq;
+
+    gain.gain.setValueAtTime(
+      .0001,
+      audio.currentTime
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+      .07,
+      audio.currentTime + .008
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+      .0001,
+      audio.currentTime + duration
+    );
+
+    osc.connect(gain);
+    gain.connect(audio.destination);
+
+    osc.start();
+
+    osc.stop(
+      audio.currentTime +
+      duration +
+      .01
+    );
+
+  }catch(e){}
+}
+
+
+/* =========================
+   VERIFY KEY
+========================= */
+
+async function verifyKey(){
+
+  const keyInput =
+    document.getElementById("key");
+
+  const button =
+    document.getElementById("btn");
+
+  const message =
+    document.getElementById("msg");
+
+  const loader =
+    document.getElementById("loader");
+
+  const key =
+    keyInput.value
+      .trim()
+      .toUpperCase();
+
+  if(!key){
+
+    message.className = "error";
+
+    message.textContent =
+      "VUI LÒNG NHẬP KEY";
+
+    sound(180,.14,"square");
+
+    return;
+  }
+
+  if(
+    APP_URL ===
+    "DÁN_URL_APP_HIỆN_TẠI_VÀO_ĐÂY"
+  ){
+
+    message.className = "error";
+
+    message.textContent =
+      "CHƯA CẤU HÌNH URL APP";
+
+    return;
+  }
+
+  button.disabled = true;
+
+  loader.style.display =
+    "block";
+
+  message.textContent = "";
+
+  sound(1100,.05);
+
+  try{
+
+    const response =
+      await fetch(
+        API_URL,
+        {
+          method:"POST",
+
+          headers:{
+            "Content-Type":
+              "application/json"
+          },
+
+          body:JSON.stringify({
+
+            key:key,
+
+            deviceId:
+              getDeviceId(),
+
+            appId:
+              APP_ID
+
+          })
+        }
+      );
+
+    const result =
+      await response.json();
+
+    if(result.valid){
+
+      message.className =
+        "success";
+
+      if(result.firstActivation){
+
+        message.textContent =
+          "✓ KEY ACTIVATED • DEVICE LOCKED";
+
+      }else{
+
+        message.textContent =
+          "✓ KEY VERIFIED";
+      }
+
+      sound(720,.07);
+
+      setTimeout(
+        () => sound(1080,.1),
+        90
+      );
+
+      /*
+        Chuyển sang app.
+      */
+      setTimeout(
+        () => {
+
+          window.location.href =
+            APP_URL;
+
+        },
+        700
+      );
+
+    }else{
+
+      message.className =
+        "error";
+
+      if(
+        result.code ===
+        "DEVICE_MISMATCH"
+      ){
+
+        message.textContent =
+          "✕ KEY ĐÃ ĐƯỢC KÍCH HOẠT TRÊN THIẾT BỊ KHÁC";
+
+      }else{
+
+        message.textContent =
+          "✕ " +
+          (
+            result.message ||
+            "KEY KHÔNG HỢP LỆ"
+          );
+      }
+
+      sound(180,.15,"square");
+    }
+
+  }catch(error){
+
+    message.className =
+      "error";
+
+    message.textContent =
+      "✕ KHÔNG KẾT NỐI ĐƯỢC SERVER";
+
+    sound(180,.15,"square");
+
+  }finally{
+
+    button.disabled = false;
+
+    loader.style.display =
+      "none";
+  }
+}
+
+
+/* Enter để xác nhận */
+
+document
+  .getElementById("key")
+  .addEventListener(
+    "keydown",
+    function(e){
+
+      if(e.key === "Enter")
+        verifyKey();
+
+    }
+  );
+
+
+/* =========================
+   PARTICLES
+========================= */
+
+const canvas =
+  document.getElementById("fx");
+
+const ctx =
+  canvas.getContext("2d");
+
+let particles = [];
+
+function resize(){
+
+  canvas.width =
+    innerWidth *
+    devicePixelRatio;
+
+  canvas.height =
+    innerHeight *
+    devicePixelRatio;
+
+  ctx.setTransform(
+    devicePixelRatio,
+    0,
+    0,
+    devicePixelRatio,
+    0,
+    0
+  );
+
+  particles =
+    Array.from(
+      {length:55},
+      () => ({
+
+        x:
+          Math.random() *
+          innerWidth,
+
+        y:
+          Math.random() *
+          innerHeight,
+
+        speed:
+          .15 +
+          Math.random() *
+          .55
+
+      })
+    );
+}
+
+function animate(){
+
+  ctx.clearRect(
+    0,
+    0,
+    innerWidth,
+    innerHeight
+  );
+
+  for(
+    const p of particles
+  ){
+
+    p.y -= p.speed;
+
+    if(p.y < 0)
+      p.y = innerHeight;
+
+    ctx.fillStyle =
+      "#ff294055";
+
+    ctx.fillRect(
+      p.x,
+      p.y,
+      1.5,
+      1.5
+    );
+  }
+
+  requestAnimationFrame(
+    animate
+  );
+}
+
+addEventListener(
+  "resize",
+  resize
+);
+
+resize();
+animate();
+
+</script>
+
+</body>
+</html>
