@@ -6,7 +6,9 @@
 <title>HK KEY SYSTEM</title>
 
 <style>
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+}
 
 html,body{
   margin:0;
@@ -44,18 +46,22 @@ body:before{
 
 .glow{
   position:fixed;
-  width:400px;
-  height:400px;
+  width:420px;
+  height:420px;
   border-radius:50%;
   background:#ff1732;
-  filter:blur(180px);
-  opacity:.08;
+  filter:blur(170px);
+  opacity:.09;
   animation:move 8s ease-in-out infinite alternate;
 }
 
 @keyframes move{
-  from{transform:translate(-25vw,-15vh)}
-  to{transform:translate(25vw,15vh)}
+  from{
+    transform:translate(-25vw,-15vh);
+  }
+  to{
+    transform:translate(25vw,15vh);
+  }
 }
 
 .card{
@@ -65,7 +71,7 @@ body:before{
   padding:28px;
   border-radius:25px;
   border:1px solid #55131c;
-  background:#08080cf2;
+  background:#08080cf5;
   box-shadow:
     0 0 45px #ff173329,
     0 30px 100px #000;
@@ -80,7 +86,11 @@ body:before{
   place-items:center;
   border:1px solid #ff2944;
   border-radius:27px;
-  background:radial-gradient(circle,#3c0710,#08080c 70%);
+  background:radial-gradient(
+    circle,
+    #3c0710,
+    #08080c 70%
+  );
   font-size:25px;
   font-weight:1000;
   letter-spacing:4px;
@@ -93,7 +103,8 @@ body:before{
 @keyframes pulse{
   50%{
     transform:scale(1.04);
-    box-shadow:0 0 55px #ff173366;
+    box-shadow:
+      0 0 55px #ff173366;
   }
 }
 
@@ -153,7 +164,8 @@ input{
 
 input:focus{
   border-color:#ff2943;
-  box-shadow:0 0 25px #ff17332b;
+  box-shadow:
+    0 0 25px #ff17332b;
 }
 
 button{
@@ -173,16 +185,20 @@ button{
   font-weight:1000;
   letter-spacing:1.5px;
   cursor:pointer;
-  box-shadow:0 0 25px #ff17332b;
+  box-shadow:
+    0 0 25px #ff17332b;
+  transition:.2s;
 }
 
 button:hover{
-  box-shadow:0 0 40px #ff173355;
   transform:translateY(-1px);
+  box-shadow:
+    0 0 40px #ff173355;
 }
 
 button:disabled{
   opacity:.55;
+  cursor:wait;
 }
 
 #message{
@@ -192,9 +208,17 @@ button:disabled{
   font-size:11px;
 }
 
-.success{color:#55ffa2}
-.error{color:#ff5369}
-.loading{color:#ffcc55}
+.success{
+  color:#55ffa2;
+}
+
+.error{
+  color:#ff5369;
+}
+
+.loading{
+  color:#ffcc55;
+}
 
 #spinner{
   display:none;
@@ -208,7 +232,53 @@ button:disabled{
 }
 
 @keyframes spin{
-  to{transform:rotate(360deg)}
+  to{
+    transform:rotate(360deg);
+  }
+}
+
+/* KEY INFO */
+
+#keyInfo{
+  display:none;
+  margin-top:18px;
+  padding:16px;
+  border:1px solid #263f32;
+  border-radius:15px;
+  background:#07100c;
+  box-shadow:
+    0 0 25px #55ffa21a;
+}
+
+.infoTitle{
+  margin-bottom:12px;
+  color:#55ffa2;
+  text-align:center;
+  font-size:10px;
+  letter-spacing:2px;
+}
+
+.infoRow{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  padding:8px 0;
+  border-bottom:1px solid #ffffff0d;
+  font-size:11px;
+}
+
+.infoRow:last-child{
+  border-bottom:0;
+}
+
+.infoLabel{
+  color:#777;
+}
+
+.infoValue{
+  color:#fff;
+  text-align:right;
+  word-break:break-all;
 }
 
 .footer{
@@ -227,9 +297,13 @@ button:disabled{
 
 <div class="card">
 
-  <div class="logo">AHK</div>
+  <div class="logo">
+    AHK
+  </div>
 
-  <h1>KEY AUTHENTICATION</h1>
+  <h1>
+    KEY AUTHENTICATION
+  </h1>
 
   <div class="sub">
     ADVANCED SECURITY SYSTEM
@@ -263,8 +337,64 @@ button:disabled{
 
   <div id="message"></div>
 
+  <!--
+    Chỉ hiện sau khi server xác thực thành công.
+  -->
+
+  <div id="keyInfo">
+
+    <div class="infoTitle">
+      ✓ KEY ĐÃ XÁC THỰC
+    </div>
+
+    <div class="infoRow">
+
+      <span class="infoLabel">
+        KEY
+      </span>
+
+      <span
+        class="infoValue"
+        id="validKey"
+      >
+        —
+      </span>
+
+    </div>
+
+    <div class="infoRow">
+
+      <span class="infoLabel">
+        HẠN SỬ DỤNG
+      </span>
+
+      <span
+        class="infoValue"
+        id="expires"
+      >
+        —
+      </span>
+
+    </div>
+
+    <div class="infoRow">
+
+      <span class="infoLabel">
+        THIẾT BỊ
+      </span>
+
+      <span
+        class="infoValue"
+      >
+        1 DEVICE
+      </span>
+
+    </div>
+
+  </div>
+
   <div class="footer">
-    1 KEY • 1 DEVICE • SERVER VERIFIED
+    1 KEY • 1 DEVICE • SESSION PROTECTED
   </div>
 
 </div>
@@ -272,13 +402,15 @@ button:disabled{
 <script>
 
 const VERIFY_URL =
-  "https://hk-key-manager.onrender.com/api/verify";
+  "/api/verify";
 
 const APP_URL =
-  "https://hk-key-manager.onrender.com/donhayhoangkhoiv2vip.html";
+  "/donhayhoangkhoiv2vip.html";
 
 
-/* DEVICE ID */
+/* =====================================================
+   DEVICE ID
+===================================================== */
 
 function getDeviceId(){
 
@@ -289,13 +421,26 @@ function getDeviceId(){
 
   if(!id){
 
-    id =
-      "AHK-" +
-      (
-        crypto.randomUUID
-          ? crypto.randomUUID()
-          : Date.now()+"-"+Math.random()
-      );
+    if(
+      window.crypto &&
+      crypto.randomUUID
+    ){
+
+      id =
+        "AHK-" +
+        crypto.randomUUID();
+
+    }else{
+
+      id =
+        "AHK-" +
+        Date.now() +
+        "-" +
+        Math.random()
+          .toString(36)
+          .slice(2);
+
+    }
 
     localStorage.setItem(
       "ahk_device_id",
@@ -307,9 +452,72 @@ function getDeviceId(){
 }
 
 
-/* AUDIO */
+/* =====================================================
+   DATE
+===================================================== */
 
-let audioContext=null;
+function formatExpiration(value){
+
+  if(value === null){
+
+    return "VĨNH VIỄN";
+
+  }
+
+  const date =
+    new Date(value);
+
+  if(
+    Number.isNaN(
+      date.getTime()
+    )
+  ){
+
+    return "KHÔNG XÁC ĐỊNH";
+
+  }
+
+  return date.toLocaleString(
+    "vi-VN",
+    {
+      year:"numeric",
+      month:"2-digit",
+      day:"2-digit",
+      hour:"2-digit",
+      minute:"2-digit"
+    }
+  );
+}
+
+
+/* =====================================================
+   MESSAGE
+===================================================== */
+
+function showMessage(
+  text,
+  type
+){
+
+  const box =
+    document.getElementById(
+      "message"
+    );
+
+  box.className =
+    type;
+
+  box.textContent =
+    text;
+}
+
+
+/* =====================================================
+   AUDIO
+===================================================== */
+
+let audioContext =
+  null;
 
 function beep(
   frequency,
@@ -325,17 +533,25 @@ function beep(
 
     if(!AC)return;
 
-    if(!audioContext)
-      audioContext=new AC();
+    if(!audioContext){
 
-    const osc =
-      audioContext.createOscillator();
+      audioContext =
+        new AC();
+
+    }
+
+    const oscillator =
+      audioContext
+        .createOscillator();
 
     const gain =
-      audioContext.createGain();
+      audioContext
+        .createGain();
 
-    osc.type=type;
-    osc.frequency.value=
+    oscillator.type =
+      type;
+
+    oscillator.frequency.value =
       frequency;
 
     gain.gain.setValueAtTime(
@@ -343,51 +559,74 @@ function beep(
       audioContext.currentTime
     );
 
-    gain.gain.exponentialRampToValueAtTime(
-      .06,
-      audioContext.currentTime+.01
-    );
+    gain.gain
+      .exponentialRampToValueAtTime(
+        .06,
+        audioContext.currentTime +
+        .01
+      );
 
-    gain.gain.exponentialRampToValueAtTime(
-      .0001,
-      audioContext.currentTime+duration
-    );
+    gain.gain
+      .exponentialRampToValueAtTime(
+        .0001,
+        audioContext.currentTime +
+        duration
+      );
 
-    osc.connect(gain);
+    oscillator.connect(gain);
     gain.connect(
       audioContext.destination
     );
 
-    osc.start();
+    oscillator.start();
 
-    osc.stop(
-      audioContext.currentTime+
-      duration+
+    oscillator.stop(
+      audioContext.currentTime +
+      duration +
       .02
     );
 
-  }catch(e){}
+  }catch(error){}
 }
 
 
-/* MESSAGE */
+/* =====================================================
+   SHOW KEY INFO
+===================================================== */
 
-function message(
-  text,
-  type
+function showKeyInfo(
+  key,
+  expiresAt
 ){
 
-  const box =
-    document.getElementById(
-      "message"
-    );
+  document
+    .getElementById(
+      "validKey"
+    )
+    .textContent =
+      key;
 
-  box.className=type;
-  box.textContent=text;
+  document
+    .getElementById(
+      "expires"
+    )
+    .textContent =
+      formatExpiration(
+        expiresAt
+      );
+
+  document
+    .getElementById(
+      "keyInfo"
+    )
+    .style.display =
+      "block";
 }
 
 
-/* VERIFY */
+/* =====================================================
+   VERIFY
+===================================================== */
 
 async function verifyKey(){
 
@@ -411,29 +650,41 @@ async function verifyKey(){
       .trim()
       .toUpperCase();
 
+  document
+    .getElementById(
+      "keyInfo"
+    )
+    .style.display =
+      "none";
+
   if(!key){
 
-    message(
+    showMessage(
       "✕ VUI LÒNG NHẬP KEY",
       "error"
     );
 
-    beep(180,.15,"square");
+    beep(
+      180,
+      .15,
+      "square"
+    );
 
     input.focus();
 
     return;
   }
 
-  button.disabled=true;
-  spinner.style.display="block";
+  button.disabled =
+    true;
 
-  message(
+  spinner.style.display =
+    "block";
+
+  showMessage(
     "ĐANG XÁC THỰC...",
     "loading"
   );
-
-  beep(900,.05);
 
   try{
 
@@ -448,106 +699,178 @@ async function verifyKey(){
               "application/json"
           },
 
+          credentials:"same-origin",
+
           body:JSON.stringify({
             key:key,
-            deviceId:getDeviceId()
+            deviceId:
+              getDeviceId()
           })
         }
       );
 
-    const result =
-      await response.json();
+    let result;
+
+    try{
+
+      result =
+        await response.json();
+
+    }catch(error){
+
+      result = {
+        valid:false,
+        code:"SERVER_ERROR"
+      };
+
+    }
+
+    /* =====================
+       SUCCESS
+    ===================== */
 
     if(
       response.ok &&
-      result.valid===true
+      result.valid === true
     ){
 
-      message(
+      showMessage(
         result.firstActivation
           ? "✓ KÍCH HOẠT THÀNH CÔNG"
           : "✓ KEY XÁC THỰC THÀNH CÔNG",
         "success"
       );
 
-      beep(720,.08);
+      showKeyInfo(
+        result.key || key,
+        result.expiresAt
+      );
 
-      setTimeout(
-        ()=>beep(1080,.1),
-        100
+      beep(
+        720,
+        .08
       );
 
       setTimeout(
-        ()=>{
-          window.location.href=
-            APP_URL;
+        () => {
+          beep(
+            1080,
+            .1
+          );
         },
-        900
+        100
+      );
+
+      /*
+        Session cookie đã được server set.
+
+        Chờ một chút để người dùng thấy
+        thông tin key + hạn sử dụng.
+      */
+
+      setTimeout(
+        () => {
+
+          window.location.href =
+            APP_URL;
+
+        },
+        1800
       );
 
       return;
     }
 
+    /* =====================
+       ERRORS
+    ===================== */
+
     if(
-      result.code===
+      result.code ===
       "DEVICE_MISMATCH"
     ){
 
-      message(
+      showMessage(
         "✕ KEY ĐÃ ĐƯỢC DÙNG TRÊN THIẾT BỊ KHÁC",
         "error"
       );
 
     }else if(
-      result.code===
+      result.code ===
       "KEY_EXPIRED"
     ){
 
-      message(
+      showMessage(
         "✕ KEY ĐÃ HẾT HẠN",
         "error"
       );
 
     }else if(
-      result.code===
+      result.code ===
       "KEY_DISABLED"
     ){
 
-      message(
+      showMessage(
         "✕ KEY ĐÃ BỊ KHÓA",
+        "error"
+      );
+
+    }else if(
+      result.code ===
+      "KEY_REQUIRED"
+    ){
+
+      showMessage(
+        "✕ VUI LÒNG NHẬP KEY",
         "error"
       );
 
     }else{
 
-      message(
+      showMessage(
         "✕ KEY KHÔNG HỢP LỆ",
         "error"
       );
+
     }
 
-    beep(180,.16,"square");
+    beep(
+      180,
+      .16,
+      "square"
+    );
 
   }catch(error){
 
-    console.error(error);
+    console.error(
+      error
+    );
 
-    message(
+    showMessage(
       "✕ KHÔNG KẾT NỐI ĐƯỢC SERVER",
       "error"
     );
 
-    beep(180,.16,"square");
+    beep(
+      180,
+      .16,
+      "square"
+    );
 
   }finally{
 
-    button.disabled=false;
-    spinner.style.display="none";
+    button.disabled =
+      false;
+
+    spinner.style.display =
+      "none";
   }
 }
 
 
-/* CLICK */
+/* =====================================================
+   CLICK
+===================================================== */
 
 document
   .getElementById(
@@ -559,7 +882,9 @@ document
   );
 
 
-/* ENTER */
+/* =====================================================
+   ENTER
+===================================================== */
 
 document
   .getElementById(
@@ -567,13 +892,79 @@ document
   )
   .addEventListener(
     "keydown",
-    e=>{
-      if(e.key==="Enter")
+    event => {
+
+      if(
+        event.key ===
+        "Enter"
+      ){
+
         verifyKey();
+
+      }
+
     }
   );
+
+
+/* =====================================================
+   URL MESSAGE
+===================================================== */
+
+const params =
+  new URLSearchParams(
+    window.location.search
+  );
+
+if(
+  params.get("login") ===
+  "required"
+){
+
+  showMessage(
+    "VUI LÒNG NHẬP KEY ĐỂ VÀO APP",
+    "error"
+  );
+
+}
+
+if(
+  params.get("session") ===
+  "expired"
+){
+
+  showMessage(
+    "✕ PHIÊN ĐÃ HẾT HẠN",
+    "error"
+  );
+
+}
+
+if(
+  params.get("session") ===
+  "disabled"
+){
+
+  showMessage(
+    "✕ KEY ĐÃ BỊ KHÓA",
+    "error"
+  );
+
+}
+
+if(
+  params.get("session") ===
+  "device"
+){
+
+  showMessage(
+    "✕ THIẾT BỊ KHÔNG HỢP LỆ",
+    "error"
+  );
+
+}
 
 </script>
 
 </body>
-   </html>
+  </html>
