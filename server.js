@@ -16,6 +16,28 @@ if (!ADMIN_PASSWORD) {
   process.exit(1);
 }
 
+/* =========================
+   CORS
+========================= */
+
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Methods",
+    "GET,POST,PATCH,DELETE,OPTIONS"
+  );
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Content-Type, x-admin-password"
+  );
+
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(204);
+  }
+
+  next();
+});
+
 app.use(express.json({ limit: "1mb" }));
 app.use(express.static(ROOT));
 
@@ -125,276 +147,230 @@ function adminAuth(req, res, next) {
    ADMIN: LIST
 ========================= */
 
-app.get(
-  "/api/keys",
-  adminAuth,
-  (req, res) => {
-    res.json(loadKeys());
-  }
-);
+app.get("/api/keys", adminAuth, (req, res) => {
+  res.json(loadKeys());
+});
 
 /* =========================
    ADMIN: CREATE
 ========================= */
 
-app.post(
-  "/api/keys",
-  adminAuth,
-  (req, res) => {
-    const keys = loadKeys();
+app.post("/api/keys", adminAuth, (req, res) => {
+  const keys = loadKeys();
 
-    const type =
-      String(
-        req.body.duration || "30d"
-      );
+  const type =
+    String(req.body.duration || "30d");
 
-    const key = {
-      id: crypto.randomUUID(),
+  const key = {
+    id: crypto.randomUUID(),
 
-      key: makeKey(),
+    key: makeKey(),
 
-      createdAt:
-        new Date().toISOString(),
+    createdAt:
+      new Date().toISOString(),
 
-      expiresAt:
-        expiration(
-          type,
-          req.body.custom
-        ),
+    expiresAt:
+      expiration(
+        type,
+        req.body.custom
+      ),
 
-      disabled: false,
+    disabled: false,
 
-      deviceId: null,
+    deviceId: null,
 
-      boundAt: null
-    };
+    boundAt: null
+  };
 
-    keys.push(key);
-    saveKeys(keys);
+  keys.push(key);
+  saveKeys(keys);
 
-    res.json(key);
-  }
-);
+  res.json(key);
+});
 
 /* =========================
    ADMIN: UPDATE
 ========================= */
 
-app.patch(
-  "/api/keys/:id",
-  adminAuth,
-  (req, res) => {
-    const keys = loadKeys();
+app.patch("/api/keys/:id", adminAuth, (req, res) => {
+  const keys = loadKeys();
 
-    const key = keys.find(
-      x => x.id === req.params.id
-    );
+  const key = keys.find(
+    x => x.id === req.params.id
+  );
 
-    if (!key) {
-      return res.status(404).json({
-        error: "Key not found"
-      });
-    }
-
-    if (
-      Object.prototype.hasOwnProperty.call(
-        req.body,
-        "disabled"
-      )
-    ) {
-      key.disabled =
-        Boolean(req.body.disabled);
-    }
-
-    if (
-      req.body.resetDevice === true
-    ) {
-      key.deviceId = null;
-      key.boundAt = null;
-    }
-
-    saveKeys(keys);
-
-    res.json(key);
+  if (!key) {
+    return res.status(404).json({
+      error: "Key not found"
+    });
   }
-);
+
+  if (
+    Object.prototype.hasOwnProperty.call(
+      req.body,
+      "disabled"
+    )
+  ) {
+    key.disabled =
+      Boolean(req.body.disabled);
+  }
+
+  if (
+    req.body.resetDevice === true
+  ) {
+    key.deviceId = null;
+    key.boundAt = null;
+  }
+
+  saveKeys(keys);
+
+  res.json(key);
+});
 
 /* =========================
    ADMIN: DELETE
 ========================= */
 
-app.delete(
-  "/api/keys/:id",
-  adminAuth,
-  (req, res) => {
-    const keys = loadKeys();
+app.delete("/api/keys/:id", adminAuth, (req, res) => {
+  const keys = loadKeys();
 
-    const filtered =
-      keys.filter(
-        x => x.id !== req.params.id
-      );
+  const filtered =
+    keys.filter(
+      x => x.id !== req.params.id
+    );
 
-    saveKeys(filtered);
+  saveKeys(filtered);
 
-    res.json({
-      ok: true
-    });
-  }
-);
+  res.json({
+    ok: true
+  });
+});
 
 /* =========================
    VERIFY KEY
 ========================= */
 
-app.post(
-  "/api/verify",
-  (req, res) => {
-
-    const input =
-      String(
-        req.body.key || ""
-      )
+app.post("/api/verify", (req, res) => {
+  const input =
+    String(req.body.key || "")
       .trim()
       .toUpperCase();
 
-    const deviceId =
-      String(
-        req.body.deviceId || ""
-      ).trim();
+  const deviceId =
+    String(req.body.deviceId || "")
+      .trim();
 
-    if (!input) {
-      return res.status(400).json({
-        valid: false,
-        code: "KEY_REQUIRED",
-        message: "Key is required"
-      });
-    }
-
-    if (!deviceId) {
-      return res.status(400).json({
-        valid: false,
-        code: "DEVICE_REQUIRED",
-        message: "Device ID is required"
-      });
-    }
-
-    const keys = loadKeys();
-
-    const key =
-      keys.find(
-        x =>
-          String(x.key)
-            .trim()
-            .toUpperCase() === input
-      );
-
-    if (!key) {
-      return res.status(404).json({
-        valid: false,
-        code: "INVALID_KEY",
-        message: "Invalid key"
-      });
-    }
-
-    if (key.disabled) {
-      return res.status(403).json({
-        valid: false,
-        code: "KEY_DISABLED",
-        message: "Key is disabled"
-      });
-    }
-
-    if (
-      key.expiresAt !== null &&
-      key.expiresAt &&
-      Date.now() >=
-        new Date(
-          key.expiresAt
-        ).getTime()
-    ) {
-      return res.status(403).json({
-        valid: false,
-        code: "KEY_EXPIRED",
-        message: "Key expired"
-      });
-    }
-
-    /*
-      KEY CHƯA GẮN DEVICE
-      => thiết bị đầu tiên được đăng ký
-    */
-
-    if (!key.deviceId) {
-
-      key.deviceId =
-        deviceId;
-
-      key.boundAt =
-        new Date().toISOString();
-
-      saveKeys(keys);
-
-      return res.json({
-        valid: true,
-        firstActivation: true,
-        deviceBound: true,
-        expiresAt: key.expiresAt
-      });
-    }
-
-    /*
-      ĐÚNG DEVICE
-    */
-
-    if (
-      key.deviceId === deviceId
-    ) {
-      return res.json({
-        valid: true,
-        firstActivation: false,
-        deviceBound: true,
-        expiresAt: key.expiresAt
-      });
-    }
-
-    /*
-      DEVICE KHÁC
-    */
-
-    return res.status(403).json({
+  if (!input) {
+    return res.status(400).json({
       valid: false,
-      code: "DEVICE_MISMATCH",
-      message:
-        "Key is already activated on another device"
+      code: "KEY_REQUIRED",
+      message: "Key is required"
     });
   }
-);
+
+  if (!deviceId) {
+    return res.status(400).json({
+      valid: false,
+      code: "DEVICE_REQUIRED",
+      message: "Device ID is required"
+    });
+  }
+
+  const keys = loadKeys();
+
+  const key =
+    keys.find(
+      x =>
+        String(x.key)
+          .trim()
+          .toUpperCase() === input
+    );
+
+  if (!key) {
+    return res.status(404).json({
+      valid: false,
+      code: "INVALID_KEY",
+      message: "Invalid key"
+    });
+  }
+
+  if (key.disabled) {
+    return res.status(403).json({
+      valid: false,
+      code: "KEY_DISABLED",
+      message: "Key is disabled"
+    });
+  }
+
+  if (
+    key.expiresAt !== null &&
+    key.expiresAt &&
+    Date.now() >=
+      new Date(key.expiresAt).getTime()
+  ) {
+    return res.status(403).json({
+      valid: false,
+      code: "KEY_EXPIRED",
+      message: "Key expired"
+    });
+  }
+
+  /* KEY CHƯA GẮN DEVICE */
+
+  if (!key.deviceId) {
+    key.deviceId = deviceId;
+    key.boundAt =
+      new Date().toISOString();
+
+    saveKeys(keys);
+
+    return res.json({
+      valid: true,
+      firstActivation: true,
+      deviceBound: true,
+      expiresAt: key.expiresAt
+    });
+  }
+
+  /* ĐÚNG DEVICE */
+
+  if (key.deviceId === deviceId) {
+    return res.json({
+      valid: true,
+      firstActivation: false,
+      deviceBound: true,
+      expiresAt: key.expiresAt
+    });
+  }
+
+  /* DEVICE KHÁC */
+
+  return res.status(403).json({
+    valid: false,
+    code: "DEVICE_MISMATCH",
+    message:
+      "Key is already activated on another device"
+  });
+});
 
 /* =========================
    HEALTH
 ========================= */
 
-app.get(
-  "/api/health",
-  (req, res) => {
-    res.json({
-      ok: true,
-      service: "hk-key-manager",
-      system: "1-key-1-device"
-    });
-  }
-);
+app.get("/api/health", (req, res) => {
+  res.json({
+    ok: true,
+    service: "hk-key-manager",
+    system: "1-key-1-device"
+  });
+});
 
 /* =========================
    START
 ========================= */
 
-app.listen(
-  PORT,
-  "0.0.0.0",
-  () => {
-    console.log(
-      `HK Key Manager running on ${PORT}`
-    );
-  }
-);
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(
+    `HK Key Manager running on ${PORT}`
+  );
+});
