@@ -1,0 +1,1403 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ĐỘ NHẠY BÁ OB54</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:#05070d;color:#fff;font-family:Arial,system-ui,sans-serif;overflow-x:hidden}
+body:before,body:after{content:"";position:fixed;width:360px;height:360px;border-radius:50%;filter:blur(105px);opacity:.2;z-index:-1;animation:float 8s infinite alternate}
+body:before{background:#00dfff;left:-130px;top:-100px}
+body:after{background:#8b35ff;right:-130px;bottom:-100px;animation-delay:-4s}
+.wrap{width:min(94%,650px);margin:auto;padding:24px 0 40px}
+.card{min-height:640px;display:flex;flex-direction:column;justify-content:center;position:relative;background:#0b1019e8;border:1px solid #00dfff38;border-radius:25px;padding:25px 18px;box-shadow:0 0 45px #00dfff16,inset 0 0 25px #ffffff06;overflow:hidden}
+.card:before{content:"";position:absolute;inset:0;border-radius:25px;padding:1px;background:linear-gradient(120deg,#00eaff,#763cff,#ff22c8,#00eaff);background-size:300% 300%;animation:border 5s linear infinite;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;pointer-events:none}
+.brand{text-align:center;color:#70edff;font-size:11px;letter-spacing:3px;font-weight:900;margin-bottom:7px}
+h1{margin:0;text-align:center;font-size:clamp(34px,9vw,55px);font-weight:950;letter-spacing:1px;background:linear-gradient(90deg,#00eaff,#fff,#a53cff,#ff35c7,#00eaff);background-size:300% auto;-webkit-background-clip:text;color:transparent;animation:gradient 4s linear infinite}
+.sub{text-align:center;color:#b5bdca;font-size:12px;letter-spacing:4px;font-weight:800;margin-top:8px}
+.line{height:2px;width:90px;margin:19px auto;background:linear-gradient(90deg,transparent,#00eaff,#a23cff,transparent);box-shadow:0 0 15px #00eaff}
+.keybox{width:min(100%,410px);margin:20px auto 0;text-align:center}.label{color:#72edff;font-size:11px;font-weight:900;letter-spacing:2px;margin:16px 0 8px}
+input,select{width:100%;padding:14px 15px;border-radius:12px;border:1px solid #00dfff44;background:#070b13;color:#fff;outline:none;font-size:15px}
+button{width:100%;padding:14px;border:0;border-radius:12px;margin-top:12px;background:linear-gradient(90deg,#00dfff,#843cff);color:#fff;font-weight:900;letter-spacing:2px;box-shadow:0 0 22px #00dfff35}
+.free{display:block;text-align:center;margin-top:13px;color:#79eaff;text-decoration:none;font-size:12px;font-weight:900;letter-spacing:2px}
+.msg{text-align:center;min-height:21px;margin-top:12px;font-size:12px;letter-spacing:2px}
+.ok{color:#00ffb3}.bad{color:#ff5575}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
+.tabs button{margin:0;background:#101621;border:1px solid #ffffff13}
+.tabs button.active{background:linear-gradient(90deg,#00dfff,#843cff)}
+.search{margin-top:2px}
+.results{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:15px}
+.box{background:#101621;border:1px solid #ffffff10;border-radius:14px;padding:13px;text-align:center;box-shadow:inset 0 0 18px #ffffff03}
+.box small{color:#8f9aaa;font-size:12px}.box b{display:block;font-size:29px;margin:4px 0;background:linear-gradient(90deg,#35a9ff,#a76aff);-webkit-background-clip:text;color:transparent}
+.note{text-align:center;color:#7e899a;font-size:11px;line-height:1.5;margin:15px 0 0}
+.footer{text-align:center;margin-top:18px;color:#697588;font-size:10px;letter-spacing:2px;font-weight:800}
+.screen{display:none}.screen.show{display:block}
+@keyframes gradient{to{background-position:300% center}}
+@keyframes border{to{background-position:300% 50%}}
+@keyframes float{to{transform:translate(65px,45px) scale(1.16)}}
+
+.suggestions{position:relative;z-index:5;text-align:left;margin-top:6px}
+.suggestion{padding:11px 13px;background:#0d1420;border:1px solid #00dfff22;border-radius:9px;margin-top:5px;color:#dbe7f4;cursor:pointer}
+.suggestion:hover{border-color:#00dfff88;box-shadow:0 0 14px #00dfff18}
+.search-wrap{position:relative}
+</style>
+
+<style>
+/* === HYPER CYBER HUD === */
+html{background:#02040a}
+body{background:
+ radial-gradient(circle at 50% 0%,#111b32 0,#05070d 38%,#02040a 100%);
+}
+body:after,body:before{opacity:.27}
+body:global{image-rendering:auto}
+.top-hud{position:fixed;z-index:20;top:10px;left:50%;transform:translateX(-50%);
+ width:min(92%,760px);display:flex;justify-content:space-between;gap:10px;
+ font:800 8px/1 Arial;letter-spacing:2px;color:#6cefff;opacity:.8;pointer-events:none}
+.hud-corners{position:fixed;inset:14px;z-index:19;pointer-events:none}
+.hud-corners i{position:absolute;width:42px;height:42px;border-color:#00eaff66;border-style:solid}
+.hud-corners i:nth-child(1){left:0;top:0;border-width:2px 0 0 2px}
+.hud-corners i:nth-child(2){right:0;top:0;border-width:2px 2px 0 0}
+.hud-corners i:nth-child(3){left:0;bottom:0;border-width:0 0 2px 2px}
+.hud-corners i:nth-child(4){right:0;bottom:0;border-width:0 2px 2px 0}
+#matrix{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.18;
+ background-image:linear-gradient(#00eaff0b 1px,transparent 1px),linear-gradient(90deg,#00eaff0b 1px,transparent 1px);
+ background-size:28px 28px;mask-image:linear-gradient(to bottom,transparent,#000 18%,#000 80%,transparent)}
+.card{backdrop-filter:blur(18px) saturate(135%);transform:perspective(1000px) rotateX(.3deg)}
+.card:after{content:"";position:absolute;inset:0;pointer-events:none;
+ background:repeating-linear-gradient(0deg,transparent 0 5px,#00eaff05 6px 7px);
+ mix-blend-mode:screen}
+.hud-badge{position:absolute;right:17px;top:14px;padding:6px 8px;border:1px solid #00eaff30;
+ border-radius:7px;color:#7defff;font:900 7px Arial;letter-spacing:1.5px;background:#00eaff08}
+.hud-badge b{color:#ff54d6}
+.orbit{position:absolute;border:1px solid #00eaff12;border-radius:50%;pointer-events:none}
+.orbit1{width:390px;height:390px;left:50%;top:45%;transform:translate(-50%,-50%);animation:spin 18s linear infinite}
+.orbit2{width:300px;height:300px;left:50%;top:45%;transform:translate(-50%,-50%);border-color:#a43cff12;animation:spin 12s linear infinite reverse}
+.telemetry{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:9px 0}
+.telemetry div{padding:8px 5px;text-align:center;border:1px solid #00eaff18;border-radius:9px;background:#06101a99}
+.telemetry small{display:block;color:#62768b;font-size:7px;letter-spacing:2px}
+.telemetry b{display:block;color:#73efff;font-size:11px;margin-top:3px;text-shadow:0 0 8px #00eaff}
+.ai-tip{margin-top:10px;text-align:center;padding:9px;border-radius:10px;
+ color:#8295aa;font:800 8px Arial;letter-spacing:1px;background:#050b14;border:1px solid #ffffff0b}
+.sense-row{transition:.25s;cursor:default}
+.sense-row:hover{transform:translateX(4px) scale(1.012);border-color:#00eaff66;box-shadow:0 0 25px #00eaff12,inset 0 0 20px #00eaff08}
+@keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+@media(max-width:600px){.top-hud{font-size:7px}.top-hud span:nth-child(3){display:none}.hud-badge{font-size:6px}}
+</style>
+
+
+<style id="ultra-tech-upgrade">
+/* ===== ULTRA TECH LAYOUT UPGRADE ===== */
+:root{
+  --cyan:#00eaff;
+  --violet:#8b5cff;
+  --pink:#ff2bc2;
+  --panel:rgba(8,13,24,.78);
+  --line:rgba(0,234,255,.18);
+}
+html{scroll-behavior:smooth}
+body{
+  min-height:100svh;
+  background:
+    radial-gradient(900px 500px at 50% -10%,rgba(0,234,255,.12),transparent 60%),
+    radial-gradient(700px 500px at 100% 80%,rgba(139,92,255,.10),transparent 60%),
+    #02040a;
+}
+body:before,body:after{filter:blur(120px);opacity:.22}
+.wrap{
+  width:min(94vw,760px);
+  min-height:100svh;
+  padding:62px 0 34px;
+  display:flex;
+  align-items:center;
+}
+.card{
+  width:100%;
+  min-height:0;
+  padding:34px clamp(18px,4vw,42px) 28px;
+  border-radius:28px;
+  background:
+    linear-gradient(145deg,rgba(13,21,35,.88),rgba(4,8,15,.94));
+  border:1px solid rgba(255,255,255,.07);
+  box-shadow:
+    0 30px 90px rgba(0,0,0,.55),
+    0 0 70px rgba(0,234,255,.07),
+    inset 0 1px 0 rgba(255,255,255,.06);
+}
+.card:before{
+  opacity:.75;
+}
+.login-card{
+  min-height:650px;
+  justify-content:center;
+  position:relative;
+}
+.login-card:after{
+  content:"";
+  position:absolute;
+  width:220px;height:220px;
+  left:50%;top:31%;
+  transform:translate(-50%,-50%);
+  border:1px solid rgba(0,234,255,.08);
+  border-radius:50%;
+  box-shadow:0 0 0 28px rgba(0,234,255,.025),0 0 0 56px rgba(139,92,255,.018);
+  pointer-events:none;
+}
+.brand{
+  font-size:9px;
+  letter-spacing:4px;
+  opacity:.9;
+}
+h1{
+  line-height:.95;
+  text-wrap:balance;
+  filter:drop-shadow(0 0 18px rgba(0,234,255,.12));
+}
+.sub{
+  font-size:10px;
+  letter-spacing:5px;
+  color:#8292a7;
+}
+.line{width:150px;margin:22px auto;background:linear-gradient(90deg,transparent,var(--cyan),var(--violet),var(--pink),transparent)}
+.keybox{position:relative;z-index:2}
+.label{
+  text-align:left;
+  font-size:9px;
+  letter-spacing:3px;
+  color:#8eefff;
+}
+input,select{
+  height:52px;
+  padding:0 16px;
+  border-radius:14px;
+  background:rgba(2,6,13,.78);
+  border-color:rgba(0,234,255,.18);
+  box-shadow:inset 0 0 20px rgba(0,234,255,.025);
+  transition:.2s ease;
+}
+input:focus,select:focus{
+  border-color:rgba(0,234,255,.62);
+  box-shadow:0 0 0 3px rgba(0,234,255,.07),0 0 28px rgba(0,234,255,.09),inset 0 0 20px rgba(0,234,255,.04);
+}
+button{
+  height:52px;
+  border-radius:14px;
+  position:relative;
+  overflow:hidden;
+  transition:.2s ease;
+}
+button:hover{transform:translateY(-2px);filter:brightness(1.08)}
+button:active{transform:translateY(0) scale(.99)}
+.free{font-size:9px;letter-spacing:3px}
+.msg{min-height:34px}
+
+.sensitivity-card{padding-top:30px}
+.sensitivity-card .hud-badge{
+  top:18px;right:20px;
+  padding:7px 9px;
+  background:rgba(0,234,255,.035);
+  backdrop-filter:blur(8px);
+}
+.techline{
+  display:inline-flex;
+  padding:6px 10px;
+  margin:0 auto 10px;
+  border:1px solid rgba(0,234,255,.13);
+  border-radius:999px;
+  background:rgba(0,234,255,.025);
+}
+.sensitivity-card h1{font-size:clamp(31px,7vw,52px);margin-top:4px}
+.tabs{
+  grid-template-columns:1fr 1fr;
+  padding:5px;
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:16px;
+  background:rgba(0,0,0,.18);
+  gap:5px;
+}
+.tabs button{
+  height:46px;
+  margin:0;
+  border:1px solid transparent;
+  background:rgba(255,255,255,.025);
+  box-shadow:none;
+}
+.tabs button.active{
+  box-shadow:0 0 24px rgba(0,234,255,.13),inset 0 0 20px rgba(255,255,255,.06);
+}
+.search-wrap{margin-top:2px}
+.suggestions{
+  max-height:260px;
+  overflow:auto;
+  scrollbar-width:thin;
+  padding-right:2px;
+}
+.suggestion{
+  padding:12px 14px;
+  border-radius:12px;
+  background:rgba(7,14,25,.96);
+  backdrop-filter:blur(12px);
+}
+.confirm{height:54px}
+.device-status{
+  padding:8px 10px;
+  margin:13px 0 8px;
+  border:1px solid rgba(0,234,255,.08);
+  border-radius:10px;
+  background:rgba(0,234,255,.018);
+}
+.scan-panel{
+  margin:10px 0;
+  min-height:42px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  font-size:8px;
+  border-color:rgba(0,234,255,.16);
+  background:linear-gradient(90deg,rgba(0,234,255,.025),rgba(139,92,255,.035),rgba(255,43,194,.025));
+}
+.telemetry{
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  margin:11px 0;
+}
+.telemetry div{
+  min-height:54px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  border-radius:12px;
+  background:linear-gradient(145deg,rgba(11,24,37,.72),rgba(5,10,18,.8));
+}
+.sensitivity-list{gap:8px}
+.sense-row{
+  min-height:64px;
+  padding:13px 15px 13px 18px;
+  border-radius:15px;
+  background:
+    linear-gradient(110deg,rgba(8,17,29,.9),rgba(14,22,38,.75));
+}
+.sense-name{font-size:10px;letter-spacing:1.2px}
+.sense-value{font-size:27px}
+.ai-tip{
+  margin-top:11px;
+  border-radius:12px;
+  padding:11px;
+  background:linear-gradient(90deg,rgba(0,234,255,.025),rgba(139,92,255,.035));
+}
+.footer{
+  margin-top:20px;
+  font-size:8px;
+  letter-spacing:3px;
+  opacity:.7;
+}
+
+/* decorative HUD rails */
+.card .hud-rail{
+  position:absolute;
+  left:20px;right:20px;top:18px;
+  height:1px;
+  background:linear-gradient(90deg,transparent,var(--cyan),transparent);
+  opacity:.18;
+}
+.card .hud-rail.bottom{
+  top:auto;bottom:18px;
+  background:linear-gradient(90deg,transparent,var(--pink),transparent);
+}
+@media (max-width:600px){
+  .wrap{padding:52px 0 24px}
+  .card{padding:29px 15px 24px;border-radius:22px}
+  .login-card{min-height:620px}
+  .sensitivity-card .hud-badge{position:relative;top:auto;right:auto;width:max-content;margin:0 0 14px auto}
+  .telemetry small{font-size:6px}
+  .telemetry b{font-size:10px}
+  .sense-row{min-height:60px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*:before,*:after{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}
+}
+</style>
+
+
+<style id="sci-fi-centered-layout">
+/* === ABSOLUTE CENTER / SYMMETRIC SCI-FI LAYOUT === */
+.wrap{
+  width:100%;
+  min-height:100svh;
+  margin:0;
+  padding:62px 12px 28px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.card{
+  width:min(100%,760px);
+  margin-inline:auto;
+  flex:0 1 760px;
+}
+
+/* Keep the actual content comfortably wide inside the centered frame */
+.sensitivity-card > *,
+.login-card > *{
+  max-width:100%;
+}
+
+.login-card .keybox{
+  width:min(100%,410px);
+  margin-left:auto;
+  margin-right:auto;
+}
+
+.sensitivity-card{
+  width:min(100%,760px);
+}
+
+/* Preserve HUD corner symmetry around the viewport */
+.hud-corners{
+  inset:14px;
+}
+
+/* Mobile: reduce only the outer gap, not the inner content width */
+@media (max-width:600px){
+  .wrap{
+    padding:52px 6px 20px;
+  }
+
+  .card{
+    width:100%;
+    margin-inline:auto;
+  }
+
+  .login-card{
+    padding-left:15px;
+    padding-right:15px;
+  }
+
+  .sensitivity-card{
+    padding-left:15px;
+    padding-right:15px;
+  }
+
+  .login-card .keybox{
+    width:min(100%,410px);
+  }
+
+  .sensitivity-card .tabs,
+  .sensitivity-card .search-wrap,
+  .sensitivity-card .confirm,
+  .sensitivity-card .device-status,
+  .sensitivity-card .scan-panel,
+  .sensitivity-card .telemetry,
+  .sensitivity-card .sensitivity-list,
+  .sensitivity-card .ai-tip{
+    width:100%;
+  }
+}
+
+/* Very narrow phones: shrink outer frame only; inner panels remain fluid */
+@media (max-width:360px){
+  .wrap{
+    padding-left:4px;
+    padding-right:4px;
+  }
+
+  .card{
+    border-radius:20px;
+  }
+}
+</style>
+
+
+<style id="login-title-fix">
+.login-card .login-techline{
+  position:relative;
+  z-index:3;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:max-content;
+  max-width:100%;
+  margin:0 auto 8px;
+  padding:6px 12px;
+  border:1px solid #ff17383d;
+  border-radius:999px;
+  background:#ff17380a;
+  color:#ff5268;
+  font:900 9px/1 Arial,sans-serif;
+  letter-spacing:4px;
+  text-shadow:0 0 12px #ff1738;
+  box-shadow:0 0 18px #ff173812,inset 0 0 14px #ff173808;
+}
+
+.login-card h1{
+  position:relative !important;
+  z-index:3 !important;
+  display:block !important;
+  width:100% !important;
+  margin:4px 0 8px !important;
+  padding:0 !important;
+  text-align:center !important;
+  line-height:1.05 !important;
+  font-size:clamp(31px,8vw,52px) !important;
+
+  /* Match the sensitivity-screen title while preventing a full-box
+     gradient fallback from appearing on Android WebView. */
+  color:#fff !important;
+  -webkit-text-fill-color:transparent !important;
+  background-image:linear-gradient(
+    90deg,#ff1738 0%,#fff 38%,#ffb0b9 50%,#fff 62%,#ff1738 100%
+  ) !important;
+  background-size:200% auto !important;
+  -webkit-background-clip:text !important;
+  background-clip:text !important;
+  background-repeat:no-repeat !important;
+  filter:drop-shadow(0 0 14px #ff173866) !important;
+}
+
+@supports not ((-webkit-background-clip:text) or (background-clip:text)){
+  .login-card h1{
+    color:#ff5268 !important;
+    -webkit-text-fill-color:#ff5268 !important;
+    background:none !important;
+  }
+}
+
+@media(max-width:600px){
+  .login-card .login-techline{
+    font-size:8px;
+    letter-spacing:3px;
+    padding:6px 10px;
+  }
+  .login-card h1{
+    font-size:clamp(29px,8vw,45px) !important;
+  }
+}
+</style>
+
+
+<style id="by-xa-bo-large-title">
+.login-card .login-techline{
+  font-size:12px !important;
+  letter-spacing:5px !important;
+  padding:8px 16px !important;
+  margin-bottom:10px !important;
+  text-shadow:0 0 16px #ff1738,0 0 28px #ff173866 !important;
+}
+.login-card h1{
+  font-size:clamp(40px,10vw,64px) !important;
+  letter-spacing:1px !important;
+  margin-top:6px !important;
+  margin-bottom:10px !important;
+}
+@media(max-width:600px){
+  .login-card .login-techline{
+    font-size:10px !important;
+    letter-spacing:4px !important;
+    padding:7px 13px !important;
+  }
+  .login-card h1{
+    font-size:clamp(36px,10vw,56px) !important;
+  }
+}
+</style>
+
+</head>
+<body>
+<div id="matrix"></div>
+<div class="hud-corners"><i></i><i></i><i></i><i></i></div>
+<div class="top-hud"><span id="sysTime">00:00:00</span><span>● ONLINE</span><span>OB54 // NEURAL CORE</span></div>
+<div class="wrap">
+
+<section id="login" class="screen show">
+<div class="card login-card"><div class="hud-rail"></div><div class="hud-rail bottom"></div>
+  <div class="login-techline">ĐỘ NHẠY BÁ OB54📱</div>
+  <h1>ĐỘ NHẠY BÁ OB54📱</h1>
+  <div class="sub">HỖ TRỢ ADR&amp;IOS • NEURAL CONFIG</div>
+  <div class="line"></div>
+  <div class="keybox">
+    <div class="label">NHẬP KEY</div>
+    <input id="key" type="password" placeholder="Nhập key của bạn">
+    <button onclick="verify()">XÁC MINH</button>
+    <a class="free" href="https://t.me/koaihoica" target="_blank" rel="noopener">NHẬN KEY FREE</a>
+    <div id="msg" class="msg"></div>
+  </div>
+</div>
+</section>
+
+<section id="sensitivity" class="screen">
+<div class="card sensitivity-card"><div class="hud-rail"></div><div class="hud-rail bottom"></div>
+  <div class="orbit orbit1"></div><div class="orbit orbit2"></div>
+  
+  <div class="techline">ĐỘ NHẠY BÁ OB54📱</div>
+  <h1>ĐỘ NHẠY BÁ OB54📱</h1>
+  <div class="sub">HỖ TRỢ ADR&amp;IOS</div>
+  <div class="scanline"></div>
+
+  <div class="tabs">
+    <button id="aBtn" class="active" onclick="changeOS('android')">ANDROID</button>
+    <button id="iBtn" onclick="changeOS('ios')">IOS</button>
+  </div>
+
+  <div class="label">TÌM KIẾM THIẾT BỊ</div>
+  <div class="search-wrap">
+    <input id="search" class="search" autocomplete="off"
+      placeholder="Nhập tên thiết bị..." oninput="filterDevices()" onkeydown="handleSearchKey(event)">
+    <div id="suggestions" class="suggestions"></div>
+  </div>
+
+  <button class="confirm" onclick="confirmDevice()">XÁC NHẬN</button>
+
+  <div id="deviceStatus" class="device-status">CHƯA CHỌN THIẾT BỊ</div>
+  <div id="scan" class="scan-panel">SYSTEM READY // WAITING FOR DEVICE</div>
+  <div class="telemetry">
+    <div><small>ĐỘ CHẤT LƯỢNG</small><b id="core">100%</b></div>
+    <div><small>TỐC ĐỘ MẠNG</small><b id="latency">-- ms</b></div>
+    <div><small>ĐỘ NHẠY BÁ</small><b id="profile">SẴN SÀNG</b></div>
+  </div>
+  <div id="result" class="sensitivity-list" style="display:none"></div>
+  <div id="aiTip" class="ai-tip">SYSTEM CORE // Chọn thiết bị để phân tích preset.</div>
+
+  <div class="footer"><div class="quality-line">CHẤT LƯỢNG CHO TỪNG THIẾT BỊ</div><div class="by-xa-bo">ADMIN HOÀNG KHÔI</div></div>
+</div>
+</section>
+</div>
+
+<script>
+
+const db={
+android:[
+"Samsung Galaxy A05","Samsung Galaxy A05s","Samsung Galaxy A12","Samsung Galaxy A13","Samsung Galaxy A14","Samsung Galaxy A15","Samsung Galaxy A23","Samsung Galaxy A24","Samsung Galaxy A25","Samsung Galaxy A34","Samsung Galaxy A54","Samsung Galaxy S20","Samsung Galaxy S21","Samsung Galaxy S22","Samsung Galaxy S23","Samsung Galaxy S24",
+"Xiaomi Redmi 9A","Xiaomi Redmi 10","Xiaomi Redmi Note 10","Xiaomi Redmi Note 11","Xiaomi Redmi Note 12","Xiaomi Redmi Note 13","POCO X3 Pro","POCO X5 Pro","POCO X6 Pro",
+"OPPO A16","OPPO A17","OPPO A57","OPPO A58","OPPO A78","OPPO Reno8","OPPO Reno10",
+"realme C21","realme C35","realme C55","realme 10","realme 11","realme GT Neo 3",
+"vivo Y21","vivo Y22","vivo Y35","vivo Y36","vivo V25","vivo V29",
+"OnePlus Nord 2","OnePlus Nord 3","ROG Phone 5","ROG Phone 7",
+"Google Pixel 6","Google Pixel 7","Google Pixel 8","Google Pixel 9",
+"Motorola G54","Motorola Edge 40","Nothing Phone (1)","Nothing Phone (2)",
+"Honor X8","Honor X9","Huawei Nova 9","Huawei P50","Sony Xperia 10","Sony Xperia 1",
+"ZTE Nubia RedMagic 8","Lenovo Legion Phone"
+],
+ios:[
+"iPhone SE (2020)","iPhone SE (2022)","iPhone X","iPhone XR","iPhone XS",
+"iPhone 11","iPhone 11 Pro","iPhone 11 Pro Max","iPhone 12","iPhone 12 Pro","iPhone 12 Pro Max",
+"iPhone 13","iPhone 13 mini","iPhone 13 Pro","iPhone 13 Pro Max","iPhone 14","iPhone 14 Plus",
+"iPhone 14 Pro","iPhone 14 Pro Max","iPhone 15","iPhone 15 Plus","iPhone 15 Pro","iPhone 15 Pro Max",
+"iPhone 16","iPhone 16 Plus","iPhone 16 Pro","iPhone 16 Pro Max","iPhone 17","iPhone 17 Pro","iPhone 17 Pro Max"
+]};
+let os="android";
+const names=["Tổng quan","Chấm đỏ","Ống ngắm 2x","Ống ngắm 4x","Ống ngắm","Nhìn tự do"];
+const presets={};
+
+function preset(name){
+  if(presets[name]) return presets[name];
+  let h=0; for(let i=0;i<name.length;i++) h=(h*31+name.charCodeAt(i))>>>0;
+  const base=185+(h%16);
+  // Preset tham khảo mới: ưu tiên thao tác nhẹ, ổn định và dễ kiểm soát.
+  presets[name]=[
+    Math.min(200,base+5), Math.min(200,base+1),
+    Math.max(105,base-5), Math.max(95,base-17),
+    Math.max(85,base-35), Math.max(95,base-23)
+  ];
+  return presets[name];
+}
+function verify(){
+ const msg=document.getElementById("msg"), key=document.getElementById("key").value;
+ if(key==="hkhoibasanfreefirevip"){
+   msg.innerHTML="<strong style=\"font-size:24px;display:block;letter-spacing:2px\">KEY ĐÚNG</strong><span style=\"font-size:10px;letter-spacing:1px\">CHÚC BẠN 1 NGÀY TỐT LÀNH</span>";
+   msg.style.color="#00ffb3";
+   msg.style.textShadow="0 0 18px #00ffb3";
+   setTimeout(()=>{
+     document.getElementById("login").classList.remove("show");
+     document.getElementById("sensitivity").classList.add("show");
+     loadDevices();
+   },1100);
+ }else{
+   msg.textContent="✕ KEY KHÔNG ĐÚNG";
+   msg.style.color="#ff4d6d";
+ }
+}
+function changeOS(x){
+ os=x;
+ document.getElementById("aBtn").classList.toggle("active",x==="android");
+ document.getElementById("iBtn").classList.toggle("active",x==="ios");
+ document.getElementById("search").value="";
+ filterDevices();
+}
+
+function chooseDevice(name){
+ document.getElementById("search").value=name;
+ document.getElementById("suggestions").innerHTML="";
+ showResult(name);
+}
+function handleSearchKey(e){
+ if(e.key==="Enter"){
+   const q=document.getElementById("search").value.trim();
+   if(q){document.getElementById("suggestions").innerHTML="";showResult(q);}
+ }
+}
+
+
+
+function loadDevices(){
+  document.getElementById("search").value="";
+  document.getElementById("suggestions").innerHTML="";
+  document.getElementById("result").innerHTML="";
+  document.getElementById("deviceStatus").textContent="CHƯA CHỌN THIẾT BỊ";
+}
+function filterDevices(){
+  const q=document.getElementById("search").value.trim().toLowerCase();
+  const list=db[os].filter(x=>x.toLowerCase().includes(q)).slice(0,8);
+  const box=document.getElementById("suggestions");
+  if(!q){box.innerHTML="";return;}
+  box.innerHTML=list.map(x=>`<div class="suggestion" onclick="chooseDevice('${x.replace(/'/g,"\\'")}')">${x}</div>`).join("");
+  if(!list.length) box.innerHTML='<div class="suggestion">Không có gợi ý — nhấn XÁC NHẬN để tạo preset tham khảo</div>';
+}
+function chooseDevice(name){
+  const input=document.getElementById("search");
+  input.value=name;
+  document.getElementById("suggestions").innerHTML="";
+  input.focus();
+}
+function handleSearchKey(e){
+  if(e.key==="Enter") confirmDevice();
+}
+function confirmDevice(){
+  const name=document.getElementById("search").value.trim();
+  const status=document.getElementById("deviceStatus");
+  const scan=document.getElementById("scan");
+  const result=document.getElementById("result");
+  if(!name){status.textContent="⚠ VUI LÒNG NHẬP THIẾT BỊ"; return}
+  document.getElementById("suggestions").innerHTML="";
+  result.style.display="none";
+  status.textContent="INITIALIZING NEURAL LINK...";
+  pulseScan("◈ QUANTUM SCAN // "+name.toUpperCase());
+  neuralTelemetry(true,name);
+  const phases=[
+    ["◈ SCANNING HARDWARE // "+name.toUpperCase(),350],
+    ["◈ ANALYZING TOUCH RESPONSE // 87%",350],
+    ["◈ CALIBRATING AIM CURVE // 94%",350],
+    ["✓ DEVICE VERIFIED // BUILDING SENSITIVITY",500]
+  ];
+  let elapsed=0;
+  phases.forEach(([txt,delay],idx)=>{
+    elapsed+=delay;
+    setTimeout(()=>{
+      scan.textContent=txt;
+      status.textContent=idx===phases.length-1?"✓ PROFILE LOCKED • "+name.toUpperCase():"PROCESSING...";
+    },elapsed);
+  });
+  setTimeout(()=>{
+    const a=preset(name);
+    const labels=["NHÌN XUNG QUANH","RED DOT SIGHT","ỐNG NGẮM 2x","ỐNG NGẮM 4x","ỐNG NGẮM SÚNG NGẮM","NHÌN CAMERA TỰ DO"];
+    result.innerHTML=a.map((v,i)=>`
+      <div class="sense-row">
+        <div class="sense-name">${i+1}. ${labels[i]}</div>
+        <div><span class="sense-value">${v}</span><span class="sense-max">/ 200</span></div>
+      </div>`).join("");
+    result.style.display="flex";
+    document.getElementById("aiTip").textContent="SYSTEM CORE // PROFILE LOCKED • 6 PARAMETERS SYNCHRONIZED";
+  },1550);
+}
+
+
+/* === NEURAL CORE ENHANCEMENTS === */
+function tickHUD(){
+  const d=new Date();
+  const t=[d.getHours(),d.getMinutes(),d.getSeconds()].map(x=>String(x).padStart(2,"0")).join(":");
+  const el=document.getElementById("sysTime"); if(el) el.textContent=t;
+}
+setInterval(tickHUD,1000); tickHUD();
+
+function neuralTelemetry(active,name){
+  const core=document.getElementById("core"), lat=document.getElementById("latency"), prof=document.getElementById("profile");
+  if(!active){core.textContent="100%";lat.textContent="-- ms";prof.textContent="SẴN SÀNG";return}
+  core.textContent="100%";
+  lat.textContent=Math.floor(8+Math.random()*15)+" ms";
+  prof.textContent="SẴN SÀNG";
+  const tip=document.getElementById("aiTip");
+  tip.textContent=""+name+" • PROFILE ACTIVE";
+}
+
+function pulseScan(text){
+  const scan=document.getElementById("scan");
+  scan.textContent=text;
+  scan.style.boxShadow="0 0 30px #00eaff33,inset 0 0 18px #00eaff0a";
+  setTimeout(()=>scan.style.boxShadow="",500);
+}
+
+</script>
+
+<style>
+.sensitivity-card{overflow:hidden}
+.techline{text-align:center;color:#6cefff;font-size:10px;font-weight:900;letter-spacing:3px;margin-bottom:8px;text-shadow:0 0 12px #00eaff}
+.scanline{height:2px;width:100%;margin:18px 0;background:linear-gradient(90deg,transparent,#00eaff,#9b3cff,#ff2ac8,transparent);box-shadow:0 0 18px #00eaff;animation:pulseLine 2s infinite}
+.confirm{position:relative;margin-top:14px;background:linear-gradient(90deg,#00dfff,#6e36ff,#ff20bd);background-size:200%;animation:buttonFlow 3s linear infinite;box-shadow:0 0 25px #00dfff45}
+.device-status{text-align:center;margin:14px 0;color:#72edff;font-size:10px;font-weight:900;letter-spacing:2px;min-height:14px}
+.sensitivity-list{display:flex;flex-direction:column;gap:9px;margin-top:10px}
+.sense-row{display:grid;grid-template-columns:1fr auto;align-items:center;padding:14px 15px;border-radius:15px;background:linear-gradient(110deg,#0a111b,#111827);border:1px solid #00dfff20;box-shadow:inset 0 0 20px #00dfff05,0 0 12px #0005;position:relative;overflow:hidden}
+.sense-row:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(#00eaff,#a33cff,#ff20c8);box-shadow:0 0 12px #00eaff}
+.sense-name{font-size:12px;font-weight:900;letter-spacing:1px;color:#dbe9f7}
+.sense-value{font-size:28px;font-weight:950;background:linear-gradient(90deg,#00eaff,#a65cff,#ff38ce);-webkit-background-clip:text;color:transparent;text-shadow:0 0 20px #00eaff33}
+.sense-max{font-size:9px;color:#748095;letter-spacing:1px;margin-left:4px}
+@keyframes pulseLine{50%{opacity:.45;box-shadow:0 0 28px #a33cff}}
+@keyframes buttonFlow{to{background-position:200% center}}
+</style>
+
+<style>
+.sensitivity-card{position:relative}
+.sensitivity-card:after{content:"";position:absolute;inset:8px;border:1px solid #00eaff10;border-radius:20px;pointer-events:none}
+.techline{font-size:9px;letter-spacing:4px;color:#6cefff;text-shadow:0 0 12px #00eaff;margin-bottom:7px}
+.scan-panel{margin:16px 0 10px;padding:12px;border-radius:12px;border:1px solid #00eaff2d;background:linear-gradient(90deg,#00eaff08,#9b3cff10,#ff20c808);font-size:9px;letter-spacing:2px;color:#7e91aa;overflow:hidden;position:relative}
+.scan-panel:before{content:"";position:absolute;left:-20%;top:0;width:20%;height:100%;background:linear-gradient(90deg,transparent,#00eaff88,transparent);animation:scanMove 2.2s infinite}
+.confirm{letter-spacing:4px;position:relative;overflow:hidden;background:linear-gradient(90deg,#00eaff,#6d36ff,#ff20bd,#00eaff);background-size:300% 100%;animation:buttonFlow 3s linear infinite}
+.confirm:after{content:"";position:absolute;top:0;left:-80%;width:50%;height:100%;background:linear-gradient(90deg,transparent,#fff8,transparent);transform:skewX(-20deg);animation:buttonShine 2.5s infinite}
+.sensitivity-list{margin-top:12px}
+.sense-row{animation:rowIn .45s both}
+.sense-row:nth-child(2){animation-delay:.08s}.sense-row:nth-child(3){animation-delay:.16s}.sense-row:nth-child(4){animation-delay:.24s}.sense-row:nth-child(5){animation-delay:.32s}.sense-row:nth-child(6){animation-delay:.40s}
+@keyframes scanMove{to{left:120%}}
+@keyframes buttonFlow{to{background-position:300% 0}}
+@keyframes buttonShine{to{left:140%}}
+@keyframes rowIn{from{opacity:0;transform:translateY(12px) scale(.97);filter:blur(4px)}to{opacity:1;transform:none;filter:none}}
+</style>
+
+<style id="final-credit-layout">
+.footer{display:flex;flex-direction:column;align-items:center;gap:7px;margin-top:20px;text-align:center;}
+.quality-line{font-size:12px;font-weight:900;letter-spacing:2px;color:#ff7b89;text-shadow:0 0 12px #ff1738;line-height:1.2;}
+.by-xa-bo{font-size:23px;font-weight:950;letter-spacing:5px;color:#ff1738;text-shadow:0 0 12px #ff1738,0 0 30px #ff173866;line-height:1;}
+@media(max-width:600px){.quality-line{font-size:10px;letter-spacing:1.5px}.by-xa-bo{font-size:21px;letter-spacing:3px}}
+</style>
+<script>
+(() => {
+  let ac;
+  const ctx=()=>ac||(ac=new (window.AudioContext||window.webkitAudioContext)());
+  function glitch(){
+    const c=ctx(), t=c.currentTime;
+    if(c.state==='suspended') c.resume();
+    const master=c.createGain(); master.gain.setValueAtTime(.0001,t); master.gain.exponentialRampToValueAtTime(.16,t+.01); master.gain.exponentialRampToValueAtTime(.0001,t+.28); master.connect(c.destination);
+    [0,0.055,0.11,0.17].forEach((d,i)=>{const o=c.createOscillator(),g=c.createGain();o.type=i%2?'sawtooth':'square';o.frequency.setValueAtTime([95,180,72,260][i],t+d);o.frequency.exponentialRampToValueAtTime([170,70,210,90][i],t+d+.07);g.gain.setValueAtTime(.0001,t+d);g.gain.exponentialRampToValueAtTime(.22,t+d+.008);g.gain.exponentialRampToValueAtTime(.0001,t+d+.065);o.connect(g).connect(master);o.start(t+d);o.stop(t+d+.07)});
+    const n=c.createBufferSource(), b=c.createBuffer(1,c.sampleRate*.18,c.sampleRate), a=b.getChannelData(0);for(let i=0;i<a.length;i++)a[i]=(Math.random()*2-1)*Math.pow(1-i/a.length,2);n.buffer=b;n.connect(master);n.start(t);
+  }
+  window.playHackerGlitch=glitch;
+  document.addEventListener('click',e=>{const el=e.target.closest('button'); if(el){const txt=(el.innerText||'').toLowerCase(); if(/sai|error|invalid|wrong|key/.test(txt)&&/sai|error|invalid|wrong/.test(txt)) glitch();}},true);
+})();
+</script>
+</body>
+</html>
+<style>
+.login-card{min-height:640px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}
+.login-card .keybox{width:min(100%,410px)}
+.free{display:block;text-align:center;margin-top:13px;color:#79eaff;text-decoration:none;font-size:12px;font-weight:900;letter-spacing:2px}
+</style>
+
+<style>
+.login-card{min-height:620px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}
+.login-card .keybox{width:min(100%,400px);margin:10px auto 0;text-align:center}
+</style>
+
+<style id="red-black-ultra-tech">
+:root{
+  --red:#ff1738;
+  --red2:#ff334f;
+  --deep:#030305;
+  --black:#050508;
+  --redSoft:rgba(255,23,56,.18);
+  --redLine:rgba(255,23,56,.42);
+}
+html,body{
+  background:#020204 !important;
+  color:#fff;
+}
+body{
+  background:
+    radial-gradient(900px 520px at 50% -10%,rgba(255,23,56,.14),transparent 62%),
+    radial-gradient(700px 500px at 100% 80%,rgba(120,0,20,.12),transparent 60%),
+    #020204 !important;
+}
+body:before{background:#ff1738 !important;opacity:.20 !important}
+body:after{background:#45000b !important;opacity:.24 !important}
+
+.top-hud{color:#ff5268 !important;text-shadow:0 0 12px #ff1738}
+.hud-corners i{border-color:#ff173866 !important}
+#matrix{
+  background-image:
+    linear-gradient(#ff17380b 1px,transparent 1px),
+    linear-gradient(90deg,#ff17380b 1px,transparent 1px) !important;
+}
+.card{
+  background:
+    linear-gradient(145deg,rgba(16,5,8,.94),rgba(3,3,6,.97)) !important;
+  border-color:#ff17383d !important;
+  box-shadow:
+    0 30px 90px #000,
+    0 0 65px #ff17381c,
+    inset 0 1px 0 #ff566622 !important;
+}
+.card:before{
+  background:linear-gradient(120deg,#ff1738,#090909,#ff334f,#020204,#ff1738) !important;
+  background-size:300% 300% !important;
+}
+.card:after{
+  background:repeating-linear-gradient(0deg,transparent 0 5px,#ff173806 6px 7px) !important;
+}
+.brand,.techline,.label{color:#ff5368 !important;text-shadow:0 0 12px #ff1738}
+h1{
+  background:linear-gradient(90deg,#ff1738,#fff,#ff334f,#080808,#ff1738) !important;
+  background-size:300% auto !important;
+  filter:drop-shadow(0 0 18px #ff173844) !important;
+}
+.sub{color:#9a8790 !important}
+.line,.scanline{
+  background:linear-gradient(90deg,transparent,#ff1738,#ff8a98,#ff1738,transparent) !important;
+  box-shadow:0 0 18px #ff1738 !important;
+}
+input,select{
+  border-color:#ff173844 !important;
+  background:#050507 !important;
+  box-shadow:inset 0 0 20px #ff17380a !important;
+}
+input:hover,select:hover{
+  border-color:#ff1738aa !important;
+  box-shadow:0 0 20px #ff173825,inset 0 0 20px #ff17380b !important;
+}
+input:focus,select:focus{
+  border-color:#ff1738cc !important;
+  box-shadow:0 0 0 3px #ff173812,0 0 30px #ff17384a,inset 0 0 22px #ff173812 !important;
+}
+button{
+  background:linear-gradient(90deg,#8e0018,#ff1738,#700012,#ff334f) !important;
+  background-size:300% 100% !important;
+  box-shadow:0 0 25px #ff17383d !important;
+  animation:rbButton 3s linear infinite !important;
+}
+button:hover{
+  box-shadow:0 0 34px #ff17386e,inset 0 0 18px #fff1 !important;
+}
+.free{color:#ff5268 !important;text-shadow:0 0 10px #ff1738}
+.ok{color:#ff4058 !important}.bad{color:#ff7080 !important}
+.msg{
+  color:#ff334f;
+  min-height:54px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  text-shadow:0 0 18px #ff1738;
+}
+.tabs{
+  border-color:#ff17382b !important;
+  background:#050507 !important;
+}
+.tabs button{background:#0a0809 !important;border-color:#ff173820 !important}
+.tabs button.active{
+  background:linear-gradient(90deg,#760014,#ff1738,#760014) !important;
+  box-shadow:0 0 26px #ff173846,inset 0 0 20px #fff1 !important;
+}
+.suggestion{
+  background:#090507 !important;
+  border-color:#ff17382e !important;
+}
+.suggestion:hover{
+  border-color:#ff1738bb !important;
+  box-shadow:0 0 18px #ff17382e !important;
+}
+.hud-badge{
+  color:#ff6a7a !important;
+  border-color:#ff17383d !important;
+  background:#ff17380a !important;
+}
+.hud-badge b{color:#ff1738 !important}
+.orbit{border-color:#ff173818 !important}
+.orbit2{border-color:#65000c18 !important}
+.telemetry div{
+  border-color:#ff17382b !important;
+  background:linear-gradient(145deg,#16070b,#050507) !important;
+}
+.telemetry b{
+  color:#ff5a6d !important;
+  text-shadow:0 0 10px #ff1738 !important;
+}
+.scan-panel{
+  border-color:#ff17384d !important;
+  background:linear-gradient(90deg,#ff173808,#ff173812,#ff173808) !important;
+  color:#c79ca4 !important;
+  box-shadow:inset 0 0 20px #ff17380a;
+}
+.scan-panel:before{
+  background:linear-gradient(90deg,transparent,#ff1738aa,transparent) !important;
+}
+.device-status{
+  color:#ff5c70 !important;
+  border-color:#ff17382b !important;
+  background:#ff173806 !important;
+}
+.sense-row{
+  border-color:#ff17382b !important;
+  background:linear-gradient(110deg,#0b0507,#17080d) !important;
+  box-shadow:inset 0 0 20px #ff173808,0 0 12px #000 !important;
+}
+.sense-row:hover{
+  transform:translateX(5px) scale(1.014) !important;
+  border-color:#ff1738aa !important;
+  box-shadow:0 0 28px #ff17382b,inset 0 0 22px #ff173810 !important;
+}
+.sense-row:before{
+  background:linear-gradient(#ff1738,#ff6575,#7a0012) !important;
+  box-shadow:0 0 14px #ff1738 !important;
+}
+.sense-value{
+  background:linear-gradient(90deg,#ff1738,#ff8090,#ff1738) !important;
+  -webkit-background-clip:text !important;
+  color:transparent !important;
+  text-shadow:0 0 20px #ff173833 !important;
+}
+.ai-tip{
+  border-color:#ff17382b !important;
+  background:linear-gradient(90deg,#ff173806,#ff173810) !important;
+}
+.footer{color:#80515a !important}
+.card .hud-rail{
+  background:linear-gradient(90deg,transparent,#ff1738,transparent) !important;
+}
+.card .hud-rail.bottom{
+  background:linear-gradient(90deg,transparent,#7a0012,transparent) !important;
+}
+
+/* Full key-area frame: glow + moving scan, not just the input. */
+.login-card .keybox{
+  padding:18px 16px 16px;
+  border:1px solid #ff17383d;
+  border-radius:20px;
+  background:linear-gradient(145deg,#120508cc,#030305ee);
+  box-shadow:0 0 35px #ff17381b,inset 0 0 25px #ff173808;
+  position:relative;
+  overflow:hidden;
+}
+.login-card .keybox:before{
+  content:"";
+  position:absolute;
+  left:-30%;top:0;width:24%;height:100%;
+  background:linear-gradient(90deg,transparent,#ff173855,transparent);
+  transform:skewX(-18deg);
+  animation:keyScan 2.2s linear infinite;
+  pointer-events:none;
+}
+.login-card .keybox:after{
+  content:"KEY AUTH // SECURE CHANNEL";
+  position:absolute;
+  top:6px;right:12px;
+  font:900 6px Arial;letter-spacing:2px;color:#ff455c88;
+  pointer-events:none;
+}
+.login-card .keybox>*{position:relative;z-index:1}
+.login-card .keybox .label{font-size:10px}
+.login-card .keybox input{margin-top:2px}
+.login-card .keybox button{margin-top:12px}
+
+/* Correct-key message: larger, red/black, then transition. */
+#msg strong{
+  font-size:clamp(28px,8vw,42px) !important;
+  color:#ff1738 !important;
+  text-shadow:0 0 12px #ff1738,0 0 34px #ff173866 !important;
+}
+#msg span{
+  font-size:clamp(11px,3vw,15px) !important;
+  color:#ffb0b9 !important;
+  margin-top:5px;
+  font-weight:900;
+}
+
+/* Hide sensitivity until a real device has been selected/confirmed. */
+.sensitivity-list{display:none !important}
+.sensitivity-list.rb-visible{display:flex !important}
+#aiTip.rb-hidden{
+  color:#ff6b7b !important;
+  text-shadow:0 0 10px #ff1738;
+}
+#aiTip.rb-ready{
+  color:#ff5368 !important;
+  text-shadow:0 0 10px #ff1738;
+}
+
+@keyframes rbButton{to{background-position:300% 0}}
+@keyframes keyScan{to{left:130%}}
+@keyframes rbPulse{
+  0%,100%{box-shadow:0 0 25px #ff17382b,inset 0 0 18px #ff173808}
+  50%{box-shadow:0 0 42px #ff173858,inset 0 0 25px #ff173812}
+}
+.login-card .keybox{animation:rbPulse 2.4s ease-in-out infinite}
+
+@media(max-width:600px){
+  .login-card .keybox{width:100%;padding:19px 13px 15px}
+  #msg strong{font-size:30px !important}
+}
+</style>
+
+<script id="red-black-ultra-tech-js">
+/* Visual/UX override only: DB, sensitivity values and original preset logic remain untouched. */
+(function(){
+  const originalVerify = window.verify;
+  window.verify = function(){
+    const key = document.getElementById("key").value;
+    if(key === "hkhoibasanfreefirevip"){
+      const msg=document.getElementById("msg");
+      msg.innerHTML='<strong>KEY ĐÚNG</strong><span>CHÚC BẠN 1 NGÀY TỐT LÀNH</span>';
+      msg.style.color="#ff1738";
+      msg.style.textShadow="0 0 18px #ff1738";
+      setTimeout(()=>{
+        document.getElementById("login").classList.remove("show");
+        document.getElementById("sensitivity").classList.add("show");
+        if(typeof loadDevices==="function") loadDevices();
+      },1100);
+    }else{
+      const msg=document.getElementById("msg");
+      msg.textContent="✕ KEY KHÔNG ĐÚNG";
+      msg.style.color="#ff4058";
+      msg.style.textShadow="0 0 18px #ff1738";
+    }
+  };
+
+  const originalConfirm = window.confirmDevice;
+  window.confirmDevice = function(){
+    const input=document.getElementById("search");
+    const result=document.getElementById("result");
+    const status=document.getElementById("deviceStatus");
+    const tip=document.getElementById("aiTip");
+    const name=input.value.trim();
+
+    if(!name){
+      result.classList.remove("rb-visible");
+      result.style.display="none";
+      status.textContent="⚠ VUI LÒNG NHẬP THIẾT BỊ";
+      tip.textContent="SIÊU CÔNG NGHỆ // HỆ THỐNG ĐANG CHỜ THIẾT BỊ";
+      tip.classList.add("rb-hidden");
+      tip.classList.remove("rb-ready");
+      return;
+    }
+
+    /* Let the existing logic calculate exactly the same sensitivity values. */
+    originalConfirm();
+
+    /* Prevent showing the table until the original verification sequence completes. */
+    result.classList.remove("rb-visible");
+    result.style.display="none";
+    tip.classList.remove("rb-hidden");
+
+    setTimeout(()=>{
+      if(result.innerHTML.trim()){
+        result.classList.add("rb-visible");
+        result.style.display="flex";
+        tip.classList.remove("rb-hidden");
+        tip.classList.add("rb-ready");
+        tip.textContent="SIÊU CÔNG NGHỆ // PROFILE LOCKED • 6 PARAMETERS SYNCHRONIZED";
+      }
+    },1650);
+  };
+
+  const originalLoad = window.loadDevices;
+  window.loadDevices = function(){
+    originalLoad();
+    const result=document.getElementById("result");
+    const tip=document.getElementById("aiTip");
+    if(result){result.classList.remove("rb-visible");result.style.display="none"}
+    if(tip){
+      tip.textContent="SIÊU CÔNG NGHỆ // NHẬP THIẾT BỊ ĐỂ PHÂN TÍCH PRESET";
+      tip.classList.add("rb-hidden");
+    }
+  };
+
+  /* If the user clears the search, immediately hide sensitivity again. */
+  document.addEventListener("input",function(e){
+    if(e.target && e.target.id==="search" && !e.target.value.trim()){
+      const result=document.getElementById("result");
+      const status=document.getElementById("deviceStatus");
+      const tip=document.getElementById("aiTip");
+      result.classList.remove("rb-visible");
+      result.style.display="none";
+      status.textContent="CHƯA CHỌN THIẾT BỊ";
+      tip.textContent="SIÊU CÔNG NGHỆ // NHẬP THIẾT BỊ ĐỂ PHÂN TÍCH PRESET";
+      tip.classList.add("rb-hidden");
+    }
+  });
+})();
+</script>
+
+<style id="final-device-title-fix">
+/* ===== FINAL RED/BLACK TITLE + STRICT DEVICE VALIDATION ===== */
+
+/* Restore the main sensitivity title clearly and prominently. */
+.sensitivity-card h1{
+  display:block !important;
+  visibility:visible !important;
+  opacity:1 !important;
+  color:#fff !important;
+  -webkit-text-fill-color:transparent !important;
+  background-image:linear-gradient(90deg,#ff1738 0%,#fff 38%,#ffb0b9 50%,#fff 62%,#ff1738 100%) !important;
+  background-size:200% auto !important;
+  -webkit-background-clip:text !important;
+  background-clip:text !important;
+  text-shadow:none !important;
+  filter:drop-shadow(0 0 14px #ff173866) !important;
+  margin:8px 0 4px !important;
+  line-height:1.05 !important;
+  position:relative !important;
+  z-index:3 !important;
+}
+.sensitivity-card .techline{
+  position:relative;
+  z-index:3;
+  color:#ff5268 !important;
+}
+.sensitivity-card .sub{
+  position:relative;
+  z-index:3;
+  color:#c7a1a8 !important;
+}
+
+/* Make the title area look intentional instead of an empty glow bar. */
+.sensitivity-card .techline + h1{
+  padding:7px 8px 2px;
+  border-radius:12px;
+}
+
+/* Strictly hide sensitivity whenever the search is empty or invalid. */
+#result{display:none !important}
+#result.rb-visible{display:flex !important}
+
+.device-status.rb-invalid{
+  color:#ff5268 !important;
+  border-color:#ff173866 !important;
+  box-shadow:0 0 20px #ff17381b,inset 0 0 18px #ff173808 !important;
+  animation:invalidPulse 1.2s ease-in-out infinite;
+}
+
+@keyframes invalidPulse{
+  50%{box-shadow:0 0 30px #ff17383b,inset 0 0 22px #ff173810}
+}
+</style>
+
+<script id="strict-device-validation">
+(function(){
+  const normalize = s => String(s || "").trim().toLowerCase().replace(/\s+/g," ");
+
+  function getExactDevice(raw){
+    const q = normalize(raw);
+    if(!q) return null;
+    /* db/os are top-level script variables, not window properties. */
+    const list = (typeof db !== "undefined" && typeof os !== "undefined" && db[os]) ? db[os] : [];
+    return list.find(x => normalize(x) === q) || null;
+  }
+
+  /* Replace confirmDevice: only an exact device from the existing DB can unlock sensitivity. */
+  window.confirmDevice = function(){
+    const input = document.getElementById("search");
+    const status = document.getElementById("deviceStatus");
+    const scan = document.getElementById("scan");
+    const result = document.getElementById("result");
+    const tip = document.getElementById("aiTip");
+    const suggestions = document.getElementById("suggestions");
+    const raw = input.value.trim();
+    const exact = getExactDevice(raw);
+
+    result.classList.remove("rb-visible");
+    result.style.display = "none";
+    suggestions.innerHTML = "";
+    status.classList.remove("rb-invalid");
+
+    /* Empty input: never show sensitivity. */
+    if(!raw){
+      status.textContent = "⚠ VUI LÒNG NHẬP THIẾT BỊ";
+      status.classList.add("rb-invalid");
+      scan.textContent = "SYSTEM WAITING // DEVICE REQUIRED";
+      tip.textContent = "SIÊU CÔNG NGHỆ // VUI LÒNG NHẬP ĐÚNG THIẾT BỊ";
+      tip.classList.add("rb-hidden");
+      tip.classList.remove("rb-ready");
+      return;
+    }
+
+    /* Random / fake / incomplete text: never generate a preset. */
+    if(!exact){
+      status.textContent = "✕ THIẾT BỊ KHÔNG HỢP LỆ // NHẬP ĐÚNG TÊN THIẾT BỊ";
+      status.classList.add("rb-invalid");
+      scan.textContent = "ACCESS DENIED // UNKNOWN DEVICE";
+      tip.textContent = "SIÊU CÔNG NGHỆ // KHÔNG TÌM THẤY THIẾT BỊ TRONG DATABASE";
+      tip.classList.add("rb-hidden");
+      tip.classList.remove("rb-ready");
+      return;
+    }
+
+    /* Put the canonical DB name into the field. */
+    input.value = exact;
+    status.textContent = "INITIALIZING NEURAL LINK // VERIFIED DEVICE";
+    tip.classList.remove("rb-hidden");
+    tip.classList.add("rb-ready");
+
+    if(typeof pulseScan === "function")
+      pulseScan("◈ QUANTUM SCAN // "+exact.toUpperCase());
+    if(typeof neuralTelemetry === "function")
+      neuralTelemetry(true, exact);
+
+    const phases = [
+      ["◈ SCANNING HARDWARE // "+exact.toUpperCase(),350],
+      ["◈ ANALYZING TOUCH RESPONSE // 87%",350],
+      ["◈ CALIBRATING AIM CURVE // 94%",350],
+      ["✓ DEVICE VERIFIED // BUILDING SENSITIVITY",500]
+    ];
+
+    let elapsed=0;
+    phases.forEach(([txt,delay],idx)=>{
+      elapsed += delay;
+      setTimeout(()=>{
+        scan.textContent=txt;
+        status.textContent =
+          idx===phases.length-1
+          ? "✓ PROFILE LOCKED • "+exact.toUpperCase()
+          : "PROCESSING...";
+      },elapsed);
+    });
+
+    /* Use the existing preset() function, preserving the original sensitivity logic. */
+    setTimeout(()=>{
+      const values = preset(exact);
+      const labels=[
+        "NHÌN XUNG QUANH",
+        "RED DOT SIGHT",
+        "ỐNG NGẮM 2x",
+        "ỐNG NGẮM 4x",
+        "ỐNG NGẮM SÚNG NGẮM",
+        "NHÌN CAMERA TỰ DO"
+      ];
+
+      result.innerHTML = values.map((v,i)=>`
+        <div class="sense-row">
+          <div class="sense-name">${i+1}. ${labels[i]}</div>
+          <div><span class="sense-value">${v}</span><span class="sense-max">/ 200</span></div>
+        </div>
+      `).join("");
+
+      result.classList.add("rb-visible");
+      result.style.display="flex";
+      tip.textContent="SIÊU CÔNG NGHỆ // DEVICE VERIFIED • 6 PARAMETERS SYNCHRONIZED";
+      tip.classList.remove("rb-hidden");
+      tip.classList.add("rb-ready");
+    },1550);
+  };
+
+  /* Selecting a suggestion is not enough to show sensitivity; user still must confirm. */
+  window.chooseDevice = function(name){
+    const exact = getExactDevice(name);
+    const input = document.getElementById("search");
+    const suggestions = document.getElementById("suggestions");
+    if(exact) input.value = exact;
+    suggestions.innerHTML = "";
+    document.getElementById("result").classList.remove("rb-visible");
+    document.getElementById("result").style.display = "none";
+  };
+
+  /* Search typing/clearing always keeps sensitivity hidden until exact confirmation. */
+  document.addEventListener("input", function(e){
+    if(!e.target || e.target.id!=="search") return;
+    const result=document.getElementById("result");
+    result.classList.remove("rb-visible");
+    result.style.display="none";
+    document.getElementById("deviceStatus").classList.remove("rb-invalid");
+    document.getElementById("aiTip").classList.remove("rb-ready");
+  });
+})();
+</script>
+
+
+<!-- ULTRA TECH BUTTON SOUNDS -->
+<script>
+(function(){
+  let audioCtx;
+  function ctx(){ return audioCtx || (audioCtx=new (window.AudioContext||window.webkitAudioContext)()); }
+  function tone(freq,dur,type='sine',gain=.035,delay=0){
+    try{
+      const c=ctx(), o=c.createOscillator(), g=c.createGain();
+      o.type=type; o.frequency.setValueAtTime(freq,c.currentTime+delay);
+      g.gain.setValueAtTime(0.0001,c.currentTime+delay);
+      g.gain.exponentialRampToValueAtTime(gain,c.currentTime+delay+.008);
+      g.gain.exponentialRampToValueAtTime(0.0001,c.currentTime+delay+dur);
+      o.connect(g);g.connect(c.destination);o.start(c.currentTime+delay);o.stop(c.currentTime+delay+dur+.02);
+    }catch(e){}
+  }
+  function clickSound(){ tone(520,.055,'square',.025); tone(760,.045,'sine',.018,.025); }
+  function confirmSound(){ tone(360,.07,'square',.025); tone(620,.10,'sine',.03,.07); tone(900,.13,'sine',.022,.15); }
+  function errorSound(){
+    tone(210,.08,'sawtooth',.038);
+    tone(135,.13,'square',.032,.055);
+    tone(92,.18,'sawtooth',.026,.12);
+    tone(55,.22,'sine',.022,.16);
+  }
+  function glitchNoise(dur=.24,gain=.045,delay=0){
+    try{
+      const c=ctx(), sr=c.sampleRate, n=Math.floor(sr*dur), b=c.createBuffer(1,n,sr), data=b.getChannelData(0);
+      for(let i=0;i<n;i++){
+        const t=i/n;
+        const gate=(Math.random()>.42?1:0) * (1-t);
+        data[i]=(Math.random()*2-1)*gate;
+      }
+      const src=c.createBufferSource(), f=c.createBiquadFilter(), g=c.createGain();
+      src.buffer=b; f.type='bandpass'; f.frequency.setValueAtTime(1800,c.currentTime+delay);
+      f.frequency.exponentialRampToValueAtTime(420,c.currentTime+delay+dur);
+      g.gain.setValueAtTime(.0001,c.currentTime+delay);
+      g.gain.exponentialRampToValueAtTime(gain,c.currentTime+delay+.012);
+      g.gain.exponentialRampToValueAtTime(.0001,c.currentTime+delay+dur);
+      src.connect(f); f.connect(g); g.connect(c.destination); src.start(c.currentTime+delay);
+    }catch(e){}
+  }
+  function wrongKeySound(){
+    try{
+      const c=ctx();
+      // HARD HACKER GLITCH + SUB BASS RUMBLE
+      // Short, aggressive stutter so repeated wrong keys stay punchy.
+      tone(1180,.028,'square',.050);
+      tone(430,.050,'sawtooth',.046,.028);
+      tone(175,.085,'square',.052,.072);
+      tone(82,.16,'sawtooth',.060,.118);
+      tone(42,.34,'sine',.075,.135);       // deep sub hit
+      tone(31,.42,'sine',.048,.145);       // low rumble tail
+      tone(920,.022,'square',.035,.215);
+      tone(260,.035,'square',.042,.245);
+      tone(58,.24,'sine',.050,.255);       // second bass pulse
+      glitchNoise(.095,.065,.012);
+      glitchNoise(.070,.052,.105);
+      glitchNoise(.125,.060,.205);
+      glitchNoise(.055,.045,.335);
+      if(navigator.vibrate) navigator.vibrate([28,18,45]);
+    }catch(e){}
+  }
+  document.addEventListener('pointerdown',function(e){
+    const el=e.target.closest('button,.suggestion,.free');
+    if(!el) return;
+    if(el.classList.contains('confirm')) confirmSound();
+    else if(el.textContent.includes('XÁC MINH')) confirmSound();
+    else if(el.classList.contains('suggestion')) clickSound();
+    else if(el.classList.contains('free')) clickSound();
+    else clickSound();
+  },true);
+  const oldAlertlessVerify=window.verify;
+  // Play a dedicated glitch/error sound whenever the entered key is wrong.
+  if(typeof oldAlertlessVerify === 'function'){
+    window.verify=function(){
+      const key=document.getElementById('key')?.value || '';
+      if(key !== 'hkhoibasanfreefirevip') wrongKeySound();
+      return oldAlertlessVerify.apply(this,arguments);
+    };
+  }
+  const keyInput=document.getElementById('key');
+  if(keyInput){
+    keyInput.addEventListener('keydown',function(e){
+      if(e.key==='Enter'){
+        const key=this.value || '';
+        if(key !== 'hkhoibasanfreefirevip') wrongKeySound();
+      }
+    },true);
+  }
+  // Also sound keyboard activation of buttons.
+  document.addEventListener('keydown',function(e){
+    if((e.key==='Enter'||e.key===' ') && document.activeElement?.tagName==='BUTTON') clickSound();
+  },true);
+})();
+</script>
