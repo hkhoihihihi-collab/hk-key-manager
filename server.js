@@ -108,8 +108,7 @@ function expiration(type, custom) {
   }
 
   if (type === "custom") {
-    const timestamp =
-      new Date(custom).getTime();
+    const timestamp = new Date(custom).getTime();
 
     if (!Number.isFinite(timestamp)) {
       return null;
@@ -141,6 +140,52 @@ function adminAuth(req, res, next) {
   }
 
   next();
+}
+
+/* =========================
+   FIND KEY
+========================= */
+
+function findKey(input) {
+  const keys = loadKeys();
+
+  const key = keys.find(
+    x =>
+      String(x.key)
+        .trim()
+        .toUpperCase() === input
+  );
+
+  if (!key) {
+    return {
+      error: "INVALID_KEY",
+      message: "Invalid key"
+    };
+  }
+
+  if (key.disabled) {
+    return {
+      error: "KEY_DISABLED",
+      message: "Key is disabled"
+    };
+  }
+
+  if (
+    key.expiresAt !== null &&
+    key.expiresAt &&
+    Date.now() >=
+      new Date(key.expiresAt).getTime()
+  ) {
+    return {
+      error: "KEY_EXPIRED",
+      message: "Key expired"
+    };
+  }
+
+  return {
+    key,
+    keys
+  };
 }
 
 /* =========================
@@ -247,7 +292,137 @@ app.delete("/api/keys/:id", adminAuth, (req, res) => {
 });
 
 /* =========================
-   VERIFY KEY
+   CHECK KEY
+   KHÔNG GẮN THIẾT BỊ
+========================= */
+
+app.post("/api/check", (req, res) => {
+  const input =
+    String(req.body.key || "")
+      .trim()
+      .toUpperCase();
+
+  if (!input) {
+    return res.status(400).json({
+      valid: false,
+      code: "KEY_REQUIRED",
+      message: "Key is required"
+    });
+  }
+
+  const result = findKey(input);
+
+  if (result.error) {
+    return res.status(
+      result.error === "INVALID_KEY"
+        ? 404
+        : 403
+    ).json({
+      valid: false,
+      code: result.error,
+      message: result.message
+    });
+  }
+
+  const key = result.key;
+
+  res.json({
+    valid: true,
+    deviceBound: Boolean(key.deviceId),
+    expiresAt: key.expiresAt
+  });
+});
+
+/* =========================
+   ACTIVATE KEY
+   GẮN 1 THIẾT BỊ
+========================= */
+
+app.post("/api/activate", (req, res) => {
+  const input =
+    String(req.body.key || "")
+      .trim()
+      .toUpperCase();
+
+  const deviceId =
+    String(req.body.deviceId || "")
+      .trim();
+
+  if (!input) {
+    return res.status(400).json({
+      valid: false,
+      code: "KEY_REQUIRED",
+      message: "Key is required"
+    });
+  }
+
+  if (!deviceId) {
+    return res.status(400).json({
+      valid: false,
+      code: "DEVICE_REQUIRED",
+      message: "Device ID is required"
+    });
+  }
+
+  const result = findKey(input);
+
+  if (result.error) {
+    return res.status(
+      result.error === "INVALID_KEY"
+        ? 404
+        : 403
+    ).json({
+      valid: false,
+      code: result.error,
+      message: result.message
+    });
+  }
+
+  const key = result.key;
+  const keys = result.keys;
+
+  /* KEY CHƯA GẮN THIẾT BỊ */
+
+  if (!key.deviceId) {
+    key.deviceId = deviceId;
+
+    key.boundAt =
+      new Date().toISOString();
+
+    saveKeys(keys);
+
+    return res.json({
+      valid: true,
+      firstActivation: true,
+      deviceBound: true,
+      expiresAt: key.expiresAt
+    });
+  }
+
+  /* ĐÚNG THIẾT BỊ */
+
+  if (key.deviceId === deviceId) {
+    return res.json({
+      valid: true,
+      firstActivation: false,
+      deviceBound: true,
+      expiresAt: key.expiresAt
+    });
+  }
+
+  /* THIẾT BỊ KHÁC */
+
+  return res.status(403).json({
+    valid: false,
+    code: "DEVICE_MISMATCH",
+    message:
+      "Key is already activated on another device"
+  });
+});
+
+/* =========================
+   VERIFY
+   GIỮ TƯƠNG THÍCH
 ========================= */
 
 app.post("/api/verify", (req, res) => {
@@ -276,49 +451,26 @@ app.post("/api/verify", (req, res) => {
     });
   }
 
-  const keys = loadKeys();
+  const result = findKey(input);
 
-  const key =
-    keys.find(
-      x =>
-        String(x.key)
-          .trim()
-          .toUpperCase() === input
-    );
-
-  if (!key) {
-    return res.status(404).json({
+  if (result.error) {
+    return res.status(
+      result.error === "INVALID_KEY"
+        ? 404
+        : 403
+    ).json({
       valid: false,
-      code: "INVALID_KEY",
-      message: "Invalid key"
+      code: result.error,
+      message: result.message
     });
   }
 
-  if (key.disabled) {
-    return res.status(403).json({
-      valid: false,
-      code: "KEY_DISABLED",
-      message: "Key is disabled"
-    });
-  }
-
-  if (
-    key.expiresAt !== null &&
-    key.expiresAt &&
-    Date.now() >=
-      new Date(key.expiresAt).getTime()
-  ) {
-    return res.status(403).json({
-      valid: false,
-      code: "KEY_EXPIRED",
-      message: "Key expired"
-    });
-  }
-
-  /* KEY CHƯA GẮN DEVICE */
+  const key = result.key;
+  const keys = result.keys;
 
   if (!key.deviceId) {
     key.deviceId = deviceId;
+
     key.boundAt =
       new Date().toISOString();
 
@@ -332,8 +484,6 @@ app.post("/api/verify", (req, res) => {
     });
   }
 
-  /* ĐÚNG DEVICE */
-
   if (key.deviceId === deviceId) {
     return res.json({
       valid: true,
@@ -342,8 +492,6 @@ app.post("/api/verify", (req, res) => {
       expiresAt: key.expiresAt
     });
   }
-
-  /* DEVICE KHÁC */
 
   return res.status(403).json({
     valid: false,
@@ -369,8 +517,12 @@ app.get("/api/health", (req, res) => {
    START
 ========================= */
 
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(
-    `HK Key Manager running on ${PORT}`
-  );
-});
+app.listen(
+  PORT,
+  "0.0.0.0",
+  () => {
+    console.log(
+      `HK Key Manager running on ${PORT}`
+    );
+  }
+);
