@@ -16,11 +16,11 @@ if (!ADMIN_PASSWORD) {
   process.exit(1);
 }
 
-app.use(express.json({ limit: "1mb" }));
-
 /* =========================
-   CORS
+   MIDDLEWARE
 ========================= */
+
+app.use(express.json({ limit: "1mb" }));
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -41,7 +41,7 @@ app.use((req, res, next) => {
 });
 
 /* =========================
-   STATIC ADMIN PANEL
+   ADMIN PANEL
 ========================= */
 
 app.use(express.static(ROOT));
@@ -66,8 +66,8 @@ function loadKeys() {
     const data = JSON.parse(raw);
 
     return Array.isArray(data) ? data : [];
-  } catch (err) {
-    console.error("loadKeys:", err);
+  } catch (error) {
+    console.error("loadKeys error:", error);
     return [];
   }
 }
@@ -90,7 +90,10 @@ function saveKeys(keys) {
 
 function makeKey() {
   const part = () =>
-    crypto.randomBytes(2).toString("hex").toUpperCase();
+    crypto
+      .randomBytes(2)
+      .toString("hex")
+      .toUpperCase();
 
   return `HK-${part()}-${part()}-${part()}`;
 }
@@ -173,7 +176,7 @@ function adminAuth(req, res, next) {
 }
 
 /* =========================
-   ADMIN: GET KEYS
+   GET ALL KEYS
 ========================= */
 
 app.get(
@@ -185,7 +188,7 @@ app.get(
 );
 
 /* =========================
-   ADMIN: CREATE KEY
+   CREATE KEY
 ========================= */
 
 app.post(
@@ -234,12 +237,12 @@ app.post(
 
     saveKeys(keys);
 
-    return res.status(201).json(key);
+    res.status(201).json(key);
   }
 );
 
 /* =========================
-   ADMIN: PATCH KEY
+   UPDATE KEY
 ========================= */
 
 app.patch(
@@ -281,10 +284,6 @@ app.patch(
         ).trim() || "all";
     }
 
-    /*
-      Cho phép reset device nếu sau này
-      admin panel gửi resetDevice:true.
-    */
     if (req.body.resetDevice === true) {
       key.deviceId = null;
       key.boundAt = null;
@@ -297,7 +296,7 @@ app.patch(
 );
 
 /* =========================
-   ADMIN: DELETE KEY
+   DELETE KEY
 ========================= */
 
 app.delete(
@@ -324,12 +323,6 @@ app.delete(
 
     saveKeys(filtered);
 
-    /*
-      Session liên quan key này sẽ
-      tự mất quyền ở lần kiểm tra tiếp theo
-      vì key không còn tồn tại.
-    */
-
     res.json({
       ok: true
     });
@@ -348,16 +341,17 @@ function findKey(input) {
       .trim()
       .toUpperCase();
 
+  const key =
+    keys.find(
+      x =>
+        String(x.key)
+          .trim()
+          .toUpperCase() === normalized
+    );
+
   return {
     keys,
-
-    key:
-      keys.find(
-        x =>
-          String(x.key)
-            .trim()
-            .toUpperCase() === normalized
-      )
+    key
   };
 }
 
@@ -421,10 +415,6 @@ function validateKey(
     };
   }
 
-  /*
-    all = dùng được cho mọi app.
-    Nếu key có App ID cụ thể thì phải khớp.
-  */
   if (
     appId &&
     key.appId &&
@@ -435,13 +425,11 @@ function validateKey(
       ok: false,
       status: 403,
       code: "APP_MISMATCH",
-      message: "Key is not valid for this app"
+      message:
+        "Key is not valid for this app"
     };
   }
 
-  /*
-    Key đã bind thiết bị khác.
-  */
   if (
     key.deviceId &&
     key.deviceId !== deviceId
@@ -467,10 +455,7 @@ function validateKey(
 ========================= */
 
 /*
-  SESSION KHÔNG CÓ TTL RIÊNG.
-
-  Không có:
-    SESSION_TTL = 30 phút
+  Session KHÔNG có TTL 30 phút.
 
   Session chỉ mất quyền khi:
   - key hết hạn
@@ -479,9 +464,9 @@ function validateKey(
   - device không còn khớp
   - appId không còn hợp lệ
 
-  LƯU Ý:
-  sessions nằm trong RAM.
-  Render restart/redeploy => session mất.
+  Lưu ý:
+  session nằm trong RAM.
+  Render restart/redeploy => session RAM mất.
 */
 
 const sessions = new Map();
@@ -497,7 +482,8 @@ function createSession(
   const session = {
     token,
 
-    keyId: key.id,
+    keyId:
+      key.id,
 
     deviceId,
 
@@ -509,9 +495,6 @@ function createSession(
     createdAt:
       Date.now(),
 
-    /*
-      null = không có thời hạn session.
-    */
     expiresAt: null
   };
 
@@ -571,8 +554,7 @@ function validateSession(token) {
   }
 
   /*
-    KHÔNG kiểm tra session TTL.
-    Session không tự hết hạn.
+    Không có kiểm tra TTL.
   */
 
   const keys =
@@ -584,9 +566,6 @@ function validateSession(token) {
         x.id === session.keyId
     );
 
-  /*
-    Key bị xóa.
-  */
   if (!key) {
     sessions.delete(token);
 
@@ -597,9 +576,6 @@ function validateSession(token) {
     };
   }
 
-  /*
-    Key bị khóa.
-  */
   if (key.disabled) {
     sessions.delete(token);
 
@@ -610,9 +586,6 @@ function validateSession(token) {
     };
   }
 
-  /*
-    Key hết hạn.
-  */
   if (isKeyExpired(key)) {
     sessions.delete(token);
 
@@ -623,9 +596,6 @@ function validateSession(token) {
     };
   }
 
-  /*
-    Device phải vẫn đúng.
-  */
   if (
     key.deviceId !==
     session.deviceId
@@ -639,9 +609,6 @@ function validateSession(token) {
     };
   }
 
-  /*
-    App ID phải còn hợp lệ.
-  */
   if (
     key.appId &&
     key.appId !== "all" &&
@@ -696,7 +663,7 @@ function requireSession(
 }
 
 /* =========================
-   ACTIVATE
+   ACTIVATE KEY
 ========================= */
 
 app.post(
@@ -758,9 +725,6 @@ app.post(
       saveKeys(keys);
     }
 
-    /*
-      Tạo session không TTL.
-    */
     const session =
       createSession(
         key,
@@ -770,7 +734,7 @@ app.post(
           "all"
       );
 
-    return res.json({
+    res.json({
       valid: true,
 
       firstActivation,
@@ -786,10 +750,8 @@ app.post(
       sessionToken:
         session.token,
 
-      /*
-        null = session không tự hết hạn.
-      */
-      sessionExpiresAt: null
+      sessionExpiresAt:
+        null
     });
   }
 );
@@ -838,7 +800,7 @@ app.post(
     const key =
       result.key;
 
-    return res.json({
+    res.json({
       valid: true,
 
       deviceBound:
@@ -861,7 +823,7 @@ app.get(
   "/api/session",
   requireSession,
   (req, res) => {
-    return res.json({
+    res.json({
       valid: true,
 
       appId:
@@ -873,10 +835,8 @@ app.get(
       keyExpiresAt:
         req.key.expiresAt,
 
-      /*
-        Session không có expiry riêng.
-      */
-      sessionExpiresAt: null
+      sessionExpiresAt:
+        null
     });
   }
 );
@@ -889,7 +849,7 @@ app.get(
   "/api/app/access",
   requireSession,
   (req, res) => {
-    return res.json({
+    res.json({
       allowed: true,
 
       app:
@@ -920,7 +880,7 @@ app.post(
 
     sessions.delete(token);
 
-    return res.json({
+    res.json({
       ok: true
     });
   }
@@ -933,14 +893,13 @@ app.post(
 app.get(
   "/api/health",
   (req, res) => {
-    return res.json({
+    res.json({
       ok: true,
       service:
         "hk-key-manager",
       session:
         "persistent-until-key-invalid",
-      version:
-        "3"
+      version: "3"
     });
   }
 );
@@ -952,26 +911,10 @@ app.get(
 app.use(
   "/api",
   (req, res) => {
-    return res.status(404).json({
+    res.status(404).json({
       error:
         "API route not found"
     });
-  }
-);
-
-/* =========================
-   FALLBACK
-========================= */
-
-app.get(
-  "*",
-  (req, res) => {
-    res.sendFile(
-      path.join(
-        ROOT,
-        "index.html"
-      )
-    );
   }
 );
 
@@ -986,6 +929,7 @@ app.listen(
     console.log(
       `HK Key Manager running on port ${PORT}`
     );
+
     console.log(
       "Session mode: persistent until key becomes invalid"
     );
